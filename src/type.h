@@ -151,18 +151,37 @@ private:
 
 public:
 
-    DataType(TypeCode code, uint8_t bits, uint16_t length)
-        : type(code, bits, length)
+    DataType() : 
+        type(TypeCode::INT, 0, 0)
+    {}
+
+    DataType(TypeCode code, uint8_t bits, uint16_t length) : 
+        type(code, bits, length)
     {}
     
-    DataType(const DataType& o)
-        : type(o.type)
+    DataType(const DataType& o) : 
+        type(o.type)
     {}
+
+    bool operator==(const DataType& o) const
+    {
+        return (this->type == o.type);
+    }
 
     size_t bits() const { return type.bits; }
     size_t bytes() const { return type.bytes(); }
+    size_t length() const { return type.length; }
+
     TypeCode getTypeCode() const { return type.code; }
 
+    bool defined() const { 
+        return (type.bits != 0 && type.length != 0);
+    }
+
+    bool isBool() const
+    {
+        return (type.code == TypeCode::UINT) && (bits() == 1);
+    }
     bool isInt() const 
     { 
         return (type.code == TypeCode::INT) && 
@@ -180,20 +199,31 @@ public:
     bool isHandler() const { return (type.code == TypeCode::HANDLER && bits() == 64); }
     bool isScalar() const { return type.length == 1; }
 
-    static DataType makeInt(uint8_t bits, uint16_t length=1) 
-    { 
-        return DataType(TypeCode::INT, bits, length); 
-    }
-    static DataType makeUInt(uint8_t bits, uint16_t length=1) 
-    { 
-        return DataType(TypeCode::UINT, bits, length); 
-    }
-    static DataType makeFloat(uint8_t bits, uint16_t length=1)
-    {
-        return DataType(TypeCode::FLOAT, bits, length);
-    }
 
 };
+
+
+inline DataType Int(uint8_t bits, uint16_t length=1)
+{
+    return DataType(TypeCode::INT, bits, length);
+}
+inline DataType UInt(uint8_t bits, uint16_t length=1)
+{
+    return DataType(TypeCode::UINT, bits, length);
+}
+inline DataType Float(uint8_t bits, uint16_t length=1)
+{
+    return DataType(TypeCode::FLOAT, bits, length);
+}
+inline DataType Handler(uint8_t bits, uint16_t length=1)
+{
+    return DataType(TypeCode::HANDLER, bits, length);
+}
+inline DataType Bool(uint16_t length=1)
+{
+    return DataType(TypeCode::UINT, 1, length);
+}
+
 
 } // SC
 

@@ -86,8 +86,8 @@ public:
     T& operator*() const { return *ptr; }
     T* operator->() const { return ptr; }
     bool operator==(const RefCountPtr& o) const { return ptr == o.ptr; }
-    bool same_as(const RefCountPtr& o) const { return ptr == o.ptr; }
-    bool not_null() const { return ptr != nullptr; }
+    bool sameAs(const RefCountPtr& o) const { return ptr == o.ptr; }
+    bool notNull() const { return ptr != nullptr; }
 
 };
 

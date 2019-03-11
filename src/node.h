@@ -18,15 +18,20 @@ namespace SC
 
 class IRVisitor;
 class IRMutator;
+class Variable;
 
-enum class NodeType : int
+class NodeRef;
+class Stmt;
+class Expr;
+
+enum class NodeType : uint8_t
 {
     INTIMM,
     UINTIMM,
     FLOATIMM,
     STRINGIMM,
     CAST,
-    VAR,
+    VARIABLE,
     ADD,
     SUB,
     MUL,
@@ -43,17 +48,15 @@ enum class NodeType : int
     AND,
     OR,
     NOT,
-    SELECT,
     CALL,
-    LET,
+    //LET,
+    LET_STMT,
+    SELECT,
     FOR,
     BLOCK,
     IF_THEN_ELSE,
 };
 
-class NodeRef;
-class Stmt;
-class Expr;
 
 /**
  * \bref basic node, parent of IR node
@@ -268,6 +271,16 @@ public:
         return (const BaseStmtNode*)ptr;
     }
 
+    const BaseStmtNode& operator*() const
+    {
+        return *((const BaseStmtNode*)ptr);
+    }
+
+    const BaseStmtNode* operator->() const
+    {
+        return (const BaseStmtNode*)ptr;
+    }
+
 
 };
 
@@ -279,38 +292,74 @@ public:
     Expr(const BaseExprNode* node) : NodeRef(node){}
     
     explicit Expr(int8_t v) : 
-        NodeRef(IntImm::make(DataType::makeInt(8), v))
+        NodeRef(IntImm::make(Int(8), v))
     {}
     explicit Expr(int16_t v) : 
-        NodeRef(IntImm::make(DataType::makeInt(16), v))
+        NodeRef(IntImm::make(Int(16), v))
     {}
     explicit Expr(int32_t v) : 
-        NodeRef(IntImm::make(DataType::makeInt(32), v))
+        NodeRef(IntImm::make(Int(32), v))
     {}
     explicit Expr(int64_t v) : 
-        NodeRef(IntImm::make(DataType::makeInt(64), v))
+        NodeRef(IntImm::make(Int(64), v))
     {}
     explicit Expr(uint8_t v) : 
-        NodeRef(IntImm::make(DataType::makeUInt(8), v))
+        NodeRef(IntImm::make(UInt(8), v))
     {}
     explicit Expr(uint16_t v) : 
-        NodeRef(IntImm::make(DataType::makeUInt(16), v))
+        NodeRef(IntImm::make(UInt(16), v))
     {}
     explicit Expr(uint32_t v) : 
-        NodeRef(IntImm::make(DataType::makeUInt(32), v))
+        NodeRef(IntImm::make(UInt(32), v))
     {}
     explicit Expr(uint64_t v) : 
-        NodeRef(IntImm::make(DataType::makeUInt(64), v))
+        NodeRef(IntImm::make(UInt(64), v))
     {}
     explicit Expr(float v) :
-        NodeRef(FloatImm::make(DataType::makeFloat(32), v))
+        NodeRef(FloatImm::make(Float(32), v))
     {}
     explicit Expr(double v) :
-        NodeRef(FloatImm::make(DataType::makeFloat(64), v))
+        NodeRef(FloatImm::make(Float(64), v))
     {}
     Expr(const std::string& v) :
         NodeRef(StringImm::make(v))
     {}
+
+    const DataType type() const { return get()->data_type; }
+
+    const BaseExprNode* get() const 
+    { 
+        return (const BaseExprNode*)ptr; 
+    }
+
+    const BaseExprNode& operator*() const
+    {
+        return *((const BaseExprNode*)ptr);
+    }
+
+    const BaseExprNode* operator->() const 
+    {
+        return (const BaseExprNode*)ptr;
+    }
+};
+
+/**
+ * \bref varexpr only refer to Variable of IR
+ */
+class VarExpr : public Expr
+{
+public:
+    VarExpr() : Expr() {}
+    explicit VarExpr(const BaseExprNode* node) : Expr(node) {}
+
+    //implemented in ir.h, because Variable is defined there.
+    VarExpr(DataType t, const std::string& label);
+    VarExpr(const std::string& lable);
+
+    const Variable* get() const 
+    { 
+        return (const Variable*)ptr; 
+    }
 };
 
 
@@ -340,6 +389,6 @@ public:
     }
 };
 
-}
+} // namespace SC
 
 #endif
