@@ -13,13 +13,13 @@ namespace
 {
 
 #define DEFINE_DEFAULT_MUTATE_VISIT(node) \
-    Expr IRMutator::visit(const node* n) { \
+    Expr IRMutator::mutateNode(const node* n) { \
         return n; \
     }
 
 
 #define DEFINE_BINARY_MUTATE_VISIT(node) \
-    Expr IRMutator::visit(const node* n) { \
+    Expr IRMutator::mutateNode(const node* n) { \
         Expr new_a = mutate(n->a); \
         Expr new_b = mutate(n->b); \
         if(new_a.sameAs(n->a) && new_b.sameAs(n->b)) \
@@ -38,7 +38,7 @@ DEFINE_DEFAULT_MUTATE_VISIT(FloatImm);
 DEFINE_DEFAULT_MUTATE_VISIT(StringImm);
 DEFINE_DEFAULT_MUTATE_VISIT(Variable);
 
-Expr IRMutator::visit(const Cast* n)
+Expr IRMutator::mutateNode(const Cast* n)
 {
     Expr new_value = mutate(n->value);
     if(new_value.sameAs(n->value))
@@ -62,7 +62,7 @@ DEFINE_BINARY_MUTATE_VISIT(Ge);
 DEFINE_BINARY_MUTATE_VISIT(And);
 DEFINE_BINARY_MUTATE_VISIT(Or);
 
-Expr IRMutator::visit(const Not* n)
+Expr IRMutator::mutateNode(const Not* n)
 {
     Expr new_value = mutate(n->value);
     if(new_value.sameAs(n->value))
@@ -73,7 +73,7 @@ Expr IRMutator::visit(const Not* n)
 /**
  * \bref mutate all the args of Call function
  */
-Expr IRMutator::visit(const Call* n)
+Expr IRMutator::mutateNode(const Call* n)
 {
     std::vector<Expr> new_args;
     bool not_mutated = true;
@@ -94,7 +94,7 @@ Expr IRMutator::visit(const Call* n)
             n->func);
 }
 
-Stmt IRMutator::visit(const LetStmt* n)
+Stmt IRMutator::mutateNode(const LetStmt* n)
 {
     Expr new_value = mutate(n->value);   
     Stmt new_body = mutate(n->body);
@@ -103,7 +103,7 @@ Stmt IRMutator::visit(const LetStmt* n)
     return LetStmt::make(n->var, new_value, new_body);
 }
 
-Stmt IRMutator::visit(const Select* n)
+Stmt IRMutator::mutateNode(const Select* n)
 {
     Expr new_cond = mutate(n->cond);
     Expr new_true_case = mutate(n->true_case);
@@ -114,7 +114,7 @@ Stmt IRMutator::visit(const Select* n)
         return n;
     return Select::make(new_cond, new_true_case, new_false_case);
 }
-Stmt IRMutator::visit(const For* n)
+Stmt IRMutator::mutateNode(const For* n)
 {
     Expr new_min = mutate(n->min);
     Expr new_extent = mutate(n->extent);
@@ -125,7 +125,7 @@ Stmt IRMutator::visit(const For* n)
         return n;
     return For::make(n->var, new_min, new_extent, new_body);
 }
-Stmt IRMutator::visit(const Block* n)
+Stmt IRMutator::mutateNode(const Block* n)
 {
     Stmt new_first = mutate(n->first);
     Stmt new_rest = mutate(n->rest);
@@ -133,7 +133,7 @@ Stmt IRMutator::visit(const Block* n)
         return n;
     return Block::make(new_first, new_rest);
 }
-Stmt IRMutator::visit(const IfThenElse* n)
+Stmt IRMutator::mutateNode(const IfThenElse* n)
 {
     Expr new_cond = mutate(n->cond);
     Stmt new_then_case = mutate(n->then_case);

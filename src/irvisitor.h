@@ -21,7 +21,7 @@ namespace SC
 class IRVisitor
 {
 
-public:
+protected:
     virtual void visit(const IntImm* n);
     virtual void visit(const UIntImm* n);
     virtual void visit(const FloatImm* n);
@@ -50,6 +50,11 @@ public:
     virtual void visit(const For* n);
     virtual void visit(const Block* n);
     virtual void visit(const IfThenElse* n);
+
+    template <typename T>
+    friend class ExprNode;
+    template <typename T>
+    friend class StmtNode;
 
 };
 
