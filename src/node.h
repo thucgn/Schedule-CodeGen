@@ -354,12 +354,27 @@ public:
 
     //implemented in ir.h, because Variable is defined there.
     VarExpr(DataType t, const std::string& label);
-    VarExpr(const std::string& lable);
+    VarExpr(const std::string& label);
 
     const Variable* get() const 
     { 
         return (const Variable*)ptr; 
     }
+};
+
+/**
+ * \bref Var
+ */
+class Var : public VarExpr
+{
+public:
+    Var(const std::string& label) : VarExpr(label) {}
+    Var(DataType t, const std::string& label) : VarExpr(t, label) {}
+    explicit Var(const BaseExprNode* node) : VarExpr(node) {}
+    explicit Var(const VarExpr& node) : VarExpr(node) {}
+
+    // implemented in ir.h, because variable is defined there
+    Var derive(const std::string& ext) const;
 };
 
 

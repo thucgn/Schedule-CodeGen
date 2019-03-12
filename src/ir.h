@@ -204,6 +204,11 @@ VarExpr::VarExpr(const std::string& label)
     : Expr(Variable::make(Int(32), label))
 {}
 
+Var Var::derive(const std::string& ext) const
+{
+    return Var(get()->data_type, get()->label+ext);
+}
+
 
 /**
  * \bref call function
