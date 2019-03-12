@@ -83,11 +83,11 @@ public:
     mutable IterType iter_type;
     mutable IterSche iter_sche;
     mutable Range range;
-    //Var var;
+    VarExpr var;
     
     mutable RefCount ref_count;
 
-    static Iter make(IterType iter_type, Range range, Var var, IterSche iter_sche = IterSche::NO_SCHEDULE);
+    static Iter make(IterType iter_type, Range range, VarExpr var, IterSche iter_sche = IterSche::NO_SCHEDULE);
 };
 
 template <>
@@ -111,14 +111,18 @@ public:
         RefCountPtr<const IterNode>(p)
     {}
 
+    /**
+     * \bref return the var
+     * note that: the convertion of iter to expr loses much infos.
+     */
     operator Expr() const
     {
-        
+        return ptr->var;
     }
 };
 
 Iter IterNode::make(IterType iter_type, Range range, 
-        Var var, IterSche iter_sche)
+        VarExpr var, IterSche iter_sche)
 {
     CHECK_IF(var.notNull(), "var is null");
     IterNode* n = new IterNode();
@@ -126,7 +130,8 @@ Iter IterNode::make(IterType iter_type, Range range,
     n->range = range;
     n->var = std::move(var);
     n->iter_sche = iter_sche;
-    return n;
+    // no need to initialize ref_count, which has a proper default constructor.
+    return Iter(n);
 }
 
 } // namespace SC

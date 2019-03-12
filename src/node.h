@@ -363,7 +363,7 @@ public:
 };
 
 /**
- * \bref Var
+ * \bref Var, note: has no constructor without args.
  */
 class Var : public VarExpr
 {
