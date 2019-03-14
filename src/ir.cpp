@@ -137,7 +137,8 @@ Stmt Block::make(Stmt first, Stmt rest)
     return n;
 }
 
-Stmt For::make(VarExpr var, Expr min, Expr extent, Stmt body)
+Stmt For::make(ForType type, VarExpr var, 
+        Expr min, Expr extent, Stmt body)
 {
     CHECK_IF(var.notNull(), "var is null");
     CHECK_IF(min.notNull(), "min is null");
@@ -149,8 +150,10 @@ Stmt For::make(VarExpr var, Expr min, Expr extent, Stmt body)
     CHECK_IF(min.type() == extent.type(), "type of min, extent can not match");
     
     For* n = new For();
+    n->for_type = type;
     n->var = std::move(var);
     n->min = std::move(min);
+    n->extent = std::move(extent);
     n->body = std::move(body);
     return n;
 }

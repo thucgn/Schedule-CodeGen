@@ -305,9 +305,10 @@ public:
     VarExpr var;
     Expr min, extent;
     Stmt body;
+    ForType for_type;
     static const NodeType _node_type = NodeType::FOR;
-    static Stmt make(VarExpr var, Expr min, Expr extent,
-            Stmt body);
+    static Stmt make(ForType type, VarExpr var,
+            Expr min, Expr extent,Stmt body);
 
 };
 
