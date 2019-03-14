@@ -360,6 +360,12 @@ public:
     { 
         return (const Variable*)ptr; 
     }
+
+    const Variable* operator->() const { return get(); }
+
+    const Variable& operator*() const { return *get(); }
+
+    VarExpr derive(const std::string& ext) const;
 };
 
 /**

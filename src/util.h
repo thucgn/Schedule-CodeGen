@@ -12,6 +12,7 @@
 #include <cstdarg>
 #include <cstdlib>
 #include <ctime>
+#include <type_traits>
 #include <sys/time.h>
 #include <cmath>
 #include <memory>
@@ -38,10 +39,10 @@ namespace SC{
     } \
 } while(0)
 
-#define CHECK_IF(flag, message) do { \
+#define CHECK_IF(flag, format, ...) do { \
     if(!(flag)) { \
-      printf("[%s, %s:%d %s] check failure: %s %s\n", \
-        __TIME__, __FILE__, __LINE__, __FUNCTION__, #flag, message); \
+      printf("[%s, %s:%d %s] check failure: %s " format "\n", \
+        __TIME__, __FILE__, __LINE__, __FUNCTION__, #flag, ##__VA_ARGS__); \
         exit(0); \
     } \
 } while(0)
@@ -94,6 +95,19 @@ template<class T, class... Args>
  * \}
  */
 #endif // 201402L
+
+/**
+ * \bref refer to halide
+ */
+
+template <typename... T>
+struct meta_and : std::true_type {};
+
+template <typename T1, typename... T>
+struct meta_and<T1, T...> : std::integral_constant<bool, T1::value&&meta_and<T...>::value> {};
+
+template <typename To, typename... T>
+struct all_are_convertible : meta_and<std::is_convertible<T, To>...> {};
     
 } // SC
 

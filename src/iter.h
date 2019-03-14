@@ -80,9 +80,9 @@ class Iter;
 class IterNode
 {
 public:
-    mutable IterType iter_type;
-    mutable IterSche iter_sche;
-    mutable Range range;
+    IterType iter_type;
+    IterSche iter_sche;
+    Range range;
     VarExpr var;
     
     mutable RefCount ref_count;
@@ -103,13 +103,15 @@ inline void destroy<IterNode>(const IterNode* p)
         delete p;
 }
 
-class Iter : public RefCountPtr<const IterNode>
+class Iter : public RefCountPtr<IterNode>
 {
 public:
-    Iter() : RefCountPtr<const IterNode>() {}
-    explicit Iter(const IterNode* p) : 
-        RefCountPtr<const IterNode>(p)
+    Iter() : RefCountPtr<IterNode>() {}
+    explicit Iter(IterNode* p) : 
+        RefCountPtr<IterNode>(p)
     {}
+
+    
 
     /**
      * \bref return the var
@@ -127,7 +129,7 @@ Iter IterNode::make(IterType iter_type, Range range,
     CHECK_IF(var.notNull(), "var is null");
     IterNode* n = new IterNode();
     n->iter_type = iter_type;
-    n->range = range;
+    n->range = std::move(range);
     n->var = std::move(var);
     n->iter_sche = iter_sche;
     // no need to initialize ref_count, which has a proper default constructor.
@@ -136,5 +138,10 @@ Iter IterNode::make(IterType iter_type, Range range,
 
 } // namespace SC
 
+namespace std
+{
+
+
+} // namespace std
 
 #endif
