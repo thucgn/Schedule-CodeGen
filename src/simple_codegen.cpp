@@ -270,5 +270,10 @@ void SimpleCodegenC::visit(const For* n)
     os << indent << "}\n";
 }
 
+void SimpleCodegenC::visit(const Variable* n)
+{
+    os << n->label;
+}
+
 
 } //namespace SC

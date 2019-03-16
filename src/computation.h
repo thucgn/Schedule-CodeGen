@@ -77,9 +77,11 @@ public:
     std::vector<Iter> reduce_iters;
 
     /**
-     * \bref body
+     * \bref body, body is not a stmt, but {Expr ...}.
+     * it will be lowered to multiple statements
      */
-    Stmt body;
+    std::vector<Expr> body;
+    //Stmt body;
 
 
     static const FunctionNodeType _node_type = FunctionNodeType::NEST_LOOP;
@@ -87,12 +89,12 @@ public:
     const std::vector<Iter>& rootIters() const override{ return root_iters; }
 
     static Computation make(const std::string& name, 
-            std::vector<Iter>&& root_iters, 
-            std::vector<Iter>&& reduce_iters,
-            Stmt body);
+            std::vector<Iter> root_iters, 
+            std::vector<Iter> reduce_iters,
+            std::vector<Expr> body);
     static Computation make(const std::string& name,
-            std::vector<Iter>&& root_iters,
-            Stmt body);
+            std::vector<Iter> root_iters,
+            std::vector<Expr> body);
 };
 
 

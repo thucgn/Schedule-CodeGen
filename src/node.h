@@ -325,7 +325,7 @@ public:
         NodeRef(StringImm::make(v))
     {}
 
-    const DataType type() const { return get()->data_type; }
+    DataType type() const { return get()->data_type; }
 
     const BaseExprNode* get() const 
     { 

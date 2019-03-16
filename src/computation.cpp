@@ -12,11 +12,11 @@ namespace SC
 {
 
 Computation NestLoopComNode::make(const std::string& name,
-        std::vector<Iter>&& root_iters,
-        std::vector<Iter>&& reduce_iters,
-        Stmt body)
+        std::vector<Iter> root_iters,
+        std::vector<Iter> reduce_iters,
+        std::vector<Expr> body)
 {
-    CHECK_IF(body.notNull(), "body is null");
+    CHECK_IF(body.size()>0, "body is null");
 
     NestLoopComNode* n = new NestLoopComNode();
     n->name = name;
@@ -25,6 +25,19 @@ Computation NestLoopComNode::make(const std::string& name,
     n->body = std::move(body);
     return n;
 }
+Computation NestLoopComNode::make(const std::string& name,
+        std::vector<Iter> root_iters,
+        std::vector<Expr> body)
+{
+    CHECK_IF(body.size()>0, "body is null");
+
+    NestLoopComNode* n = new NestLoopComNode();
+    n->name = name;
+    n->root_iters = std::move(root_iters);
+    n->body = std::move(body);
+    return n;
+}
+
 
 } //namespace SC
 

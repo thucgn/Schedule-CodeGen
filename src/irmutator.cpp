@@ -123,7 +123,7 @@ Stmt IRMutator::mutateNode(const For* n)
             && new_extent.sameAs(n->extent)
             && new_body.sameAs(n->body))
         return n;
-    return For::make(n->var, new_min, new_extent, new_body);
+    return For::make(n->for_type, n->var, new_min, new_extent, new_body);
 }
 Stmt IRMutator::mutateNode(const Block* n)
 {

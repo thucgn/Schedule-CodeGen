@@ -53,7 +53,7 @@ public:
         CHECK_IF(a.notNull(), "Expr a is null!");
         CHECK_IF(b.notNull(), "Expr a is null!");
         CHECK_IF(a.type() == b.type(), "type of Expr a, b can not match");
-        const T* n = new T();
+        T* n = new T();
         n->data_type = a.type();
         n->a = std::move(a);
         n->b = std::move(b);
@@ -196,23 +196,6 @@ public:
     static Expr make(DataType type, const std::string& label);
 };
 
-VarExpr::VarExpr(DataType t, const std::string& label)
-    : Expr(Variable::make(t, label))
-{}
-
-VarExpr::VarExpr(const std::string& label)
-    : Expr(Variable::make(Int(32), label))
-{}
-
-VarExpr VarExpr::derive(const std::string& ext) const
-{
-    return VarExpr(get()->data_type, get()->label+ext);
-}
-
-Var Var::derive(const std::string& ext) const
-{
-    return Var(get()->data_type, get()->label+ext);
-}
 
 
 /**
