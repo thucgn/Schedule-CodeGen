@@ -145,5 +145,15 @@ Stmt IRMutator::mutateNode(const IfThenElse* n)
     return IfThenElse::make(new_cond, new_then_case, new_else_case);
 }
 
+Stmt IRMutator::mutateNode(const Store* n)
+{
+    Expr new_lhs = mutate(n->lhs);
+    Expr new_rhs = mutate(n->rhs);
+    if(new_lhs.sameAs(n->lhs) && new_rhs.sameAs(n->rhs))
+        return n;
+    else
+        return Store::make(new_lhs, new_rhs);
+}
+
 } // namespace SC
 

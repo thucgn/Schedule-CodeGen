@@ -320,6 +320,18 @@ public:
 
 };
 
+/**
+ * \bref Store
+ */
+class Store : public StmtNode<Store>
+{
+public:
+    Expr lhs;
+    Expr rhs;
+    static const NodeType _node_type = NodeType::STORE;
+    static Stmt make(Expr lhs, Expr rhs);
+};
+
 
 
 

@@ -63,6 +63,7 @@ protected:
     virtual Stmt mutateNode(const For* n);
     virtual Stmt mutateNode(const Block* n);
     virtual Stmt mutateNode(const IfThenElse* n);
+    virtual Stmt mutateNode(const Store* n);
 
     template <typename T>
     friend class ExprNode;

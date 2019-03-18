@@ -123,5 +123,11 @@ void IRVisitor::visit(const IfThenElse* n)
     n->else_case.accept(this);
 }
 
+void IRVisitor::visit(const Store* n)
+{
+    n->lhs.accept(this);
+    n->rhs.accept(this);
+}
+
 } // namespace SC
 

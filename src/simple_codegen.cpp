@@ -289,5 +289,14 @@ void SimpleCodegenC::visit(const Variable* n)
     os << n->label;
 }
 
+void SimpleCodegenC::visit(const Store* n)
+{
+    os << indent;
+    n->lhs.accept(this);
+    os << " = ";
+    n->rhs.accept(this);
+    os << ";\n";
+}
+
 
 } //namespace SC

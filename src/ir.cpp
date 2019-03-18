@@ -193,5 +193,17 @@ Stmt For::make(ForType type, VarExpr var,
     return n;
 }
 
+Stmt Store::make(Expr lhs, Expr rhs)
+{
+    CHECK_IF(lhs.notNull() && rhs.notNull(), "operand of Store cannot be null");
+    CHECK_IF(lhs.is_type<Variable>() || 
+            (lhs.is_type<Call>() && lhs.cast_to<Call>()->call_type==CallType::TENSOR_ACCESS),
+            "lhs mush be either variable or Tensor access");
+    Store* n = new Store();
+    n->lhs = std::move(lhs);
+    n->rhs = std::move(rhs);
+    return n;
+}
+
 
 } // namespace SC
