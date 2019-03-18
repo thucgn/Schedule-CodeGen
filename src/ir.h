@@ -11,6 +11,7 @@
 #include "node.h"
 #include <vector>
 #include "function.h"
+#include "tensor_base.h"
 
 namespace SC
 {
@@ -22,6 +23,7 @@ enum class CallType : uint8_t
 {
     EXTERNAL, // external function
     INTERNAL, // Function
+    TENSOR_ACCESS, // access a tensor
 };
 
 /**
@@ -197,6 +199,20 @@ public:
 };
 
 
+/**
+ * \bref access tensor
+ */
+/*
+class BufferElement : public ExprNode<BufferElement>
+{
+public:
+    TensorBase tb;
+    std::vector<Expr> indices;
+
+    static const NodeType _node_type = NodeType::BUFFER_ELEMENT;
+    static Expr make(DataType type, 
+};*/
+
 
 /**
  * \bref call function
@@ -221,6 +237,10 @@ public:
      * \bref function being called
      */
     Function func;
+    /**
+     * \bref tensor to be accessed
+     */
+    TensorBase tb;
 
     static const NodeType _node_type = NodeType::CALL;
 
@@ -229,6 +249,11 @@ public:
             const std::string& name,
             std::vector<Expr>&& args,
             Function func);
+    static Expr make(RetType rt,
+            CallType ct, 
+            const std::string& name,
+            std::vector<Expr>&& args,
+            TensorBase tb);
 
 };
 

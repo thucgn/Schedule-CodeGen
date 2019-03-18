@@ -202,13 +202,27 @@ void SimpleCodegenC::visit(const Select* n)
 }
 void SimpleCodegenC::visit(const Call* n)
 {
-    os << n->name << "(";
-    for(auto& arg : n->args)
+    if(n->call_type == CallType::TENSOR_ACCESS)
     {
-        arg.accept(this);
-        os << ", ";
+        os << n->name << "[";
+        for(auto& arg : n->args)
+        {
+            arg.accept(this);
+            os << ",";
+        }
+        os << ')';
     }
-    os << ')';
+    else
+    {
+        os << n->name << "(";
+        for(auto& arg : n->args)
+        {
+            arg.accept(this);
+            os << ", ";
+        }
+        os << ')';
+    
+    }
 }
 void SimpleCodegenC::visit(const Block* n)
 {

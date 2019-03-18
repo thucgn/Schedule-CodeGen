@@ -35,7 +35,7 @@ struct SplitResult
 /**
  * \bref a stage is corresponding to a computation
  */
-class StageNode
+class StageNode final
 {
 public:
 
@@ -107,7 +107,7 @@ public:
 
 };
 
-class ScheduleNode
+class ScheduleNode final
 {
 public:
     /**
