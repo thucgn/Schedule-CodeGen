@@ -129,5 +129,13 @@ void IRVisitor::visit(const Store* n)
     n->rhs.accept(this);
 }
 
+void IRVisitor::visit(const Reduce* n)
+{
+    n->lhs.accept(this);
+    n->rhs.accept(this);
+    for(auto& iter : n->reduce_iters)
+        iter->var.accept(this);
+}
+
 } // namespace SC
 

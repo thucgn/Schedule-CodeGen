@@ -121,6 +121,8 @@ Expr Call::make(RetType rt,
     return n;
 }
 
+
+
 Stmt LetStmt::make(VarExpr var, Expr value, Stmt body)
 {
     CHECK_IF(var.notNull(), "iterator var is null");
@@ -205,5 +207,23 @@ Stmt Store::make(Expr lhs, Expr rhs)
     return n;
 }
 
+Stmt Reduce::make(ReduceType reduce_type,
+        Expr lhs, Expr rhs, std::vector<Iter> reduce_iters)
+{
+    CHECK_IF(lhs.notNull(), "lhs cannot be null");
+    CHECK_IF(rhs.notNull(), "rhs cannot be null");
+    for(auto& iter : reduce_iters)
+    {
+        CHECK_IF(iter->iter_type == IterType::REDUCTION, 
+                "iter mush be reduction iter");
+    }
+
+    Reduce* n = new Reduce();
+    n->reduce_type = reduce_type;
+    n->lhs = std::move(lhs);
+    n->rhs = std::move(rhs);
+    n->reduce_iters = std::move(reduce_iters);
+    return n;
+}
 
 } // namespace SC

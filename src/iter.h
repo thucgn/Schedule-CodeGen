@@ -9,7 +9,6 @@
 #define _ITER_H
 
 #include "node.h"
-#include "ir.h"
 #include "refcountptr.h"
 
 namespace SC

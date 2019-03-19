@@ -56,6 +56,7 @@ enum class NodeType : uint8_t
     BLOCK,
     IF_THEN_ELSE,
     STORE,
+    REDUCE,
 };
 
 

@@ -298,5 +298,14 @@ void SimpleCodegenC::visit(const Store* n)
     os << ";\n";
 }
 
+void SimpleCodegenC::visit(const Reduce* n)
+{
+    os << indent << " reduce ";
+    n->lhs.accept(this);
+    os << " = ";
+    n->rhs.accept(this);
+    os << "; \n";
+}
+
 
 } //namespace SC

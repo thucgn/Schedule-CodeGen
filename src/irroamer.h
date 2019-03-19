@@ -67,6 +67,7 @@ private:
             case NodeType::FOR:
             case NodeType::BLOCK:
             case NodeType::STORE:
+            case NodeType::REDUCE:
             case NodeType::IF_THEN_ELSE:*/
             default:
                 CHECK_IF(0, "unsupported expr class");
@@ -86,6 +87,7 @@ private:
             DEFINE_VISIT(BLOCK, Block);
             DEFINE_VISIT(IF_THEN_ELSE, IfThenElse);
             DEFINE_VISIT(STORE, Store);
+            DEFINE_VISIT(REDUCE, Reduce);
             default:
                 CHECK_IF(0, "unsupported stmt class");
         }

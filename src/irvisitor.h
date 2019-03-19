@@ -51,6 +51,7 @@ protected:
     virtual void visit(const Block* n);
     virtual void visit(const IfThenElse* n);
     virtual void visit(const Store* n);
+    virtual void visit(const Reduce* n);
 
     template <typename T>
     friend class ExprNode;

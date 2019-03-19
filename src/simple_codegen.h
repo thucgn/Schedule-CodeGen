@@ -68,6 +68,7 @@ protected:
     void visit(const Block* n) override;
     void visit(const IfThenElse* n) override;
     void visit(const Store* n) override;
+    void visit(const Reduce* n) override;
 
     
     template <typename T>

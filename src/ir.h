@@ -12,6 +12,8 @@
 #include <vector>
 #include "function.h"
 #include "tensor_base.h"
+//#include "reduction.h"
+#include "iter.h"
 
 namespace SC
 {
@@ -35,6 +37,11 @@ enum class ForType : uint8_t
     PARALLEL, // parallel execution
     VECTORIZED, // using vectorization intrinsics
     UNROLL // unroll execution
+};
+
+enum class ReduceType : uint8_t
+{
+    ADD,
 };
 
 class Cast : public ExprNode<Cast>
@@ -257,6 +264,7 @@ public:
 
 };
 
+
 /**
  * \bref Within the statement 'body', instances of var refer to value
  */
@@ -333,6 +341,23 @@ public:
 };
 
 
+/**
+ * \bref reduce, 
+ */
+class Reduce : public StmtNode<Reduce>
+{
+public:  
+    ReduceType reduce_type;
+    
+    Expr lhs;
+    Expr rhs;
+
+    std::vector<Iter> reduce_iters;
+     
+    static Stmt make(ReduceType reduce_type,
+            Expr lhs, Expr rhs,
+            std::vector<Iter> reduce_iters);
+};
 
 
 } // SC
