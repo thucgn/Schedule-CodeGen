@@ -14,9 +14,15 @@ namespace SC
 Computation NestLoopComNode::make(const std::string& name,
         std::vector<Iter> root_iters,
         std::vector<Iter> reduce_iters,
-        std::vector<Expr> body)
+        std::vector<Stmt> body)
 {
     CHECK_IF(body.size()>0, "body is null");
+
+    for(auto& iter : reduce_iters)
+    {
+        CHECK_IF(iter->iter_type == IterType::REDUCTION, 
+                " type of reduce iter must be reduction");
+    }
 
     NestLoopComNode* n = new NestLoopComNode();
     n->name = name;
@@ -27,7 +33,7 @@ Computation NestLoopComNode::make(const std::string& name,
 }
 Computation NestLoopComNode::make(const std::string& name,
         std::vector<Iter> root_iters,
-        std::vector<Expr> body)
+        std::vector<Stmt> body)
 {
     CHECK_IF(body.size()>0, "body is null");
 

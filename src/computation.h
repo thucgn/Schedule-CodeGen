@@ -80,7 +80,12 @@ public:
      * \bref body, body is not a stmt, but {Expr ...}.
      * it will be lowered to multiple statements
      */
-    std::vector<Expr> body;
+    //std::vector<Expr> body;
+    
+    /**
+     * bref body
+     */
+    std::vector<Stmt> body;
     //Stmt body;
 
 
@@ -91,10 +96,10 @@ public:
     static Computation make(const std::string& name, 
             std::vector<Iter> root_iters, 
             std::vector<Iter> reduce_iters,
-            std::vector<Expr> body);
+            std::vector<Stmt> body);
     static Computation make(const std::string& name,
             std::vector<Iter> root_iters,
-            std::vector<Expr> body);
+            std::vector<Stmt> body);
 };
 
 
