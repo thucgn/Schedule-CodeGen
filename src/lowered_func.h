@@ -8,12 +8,34 @@
 #ifndef _LOWERED_FUNC_H
 #define _LOWERED_FUNC_H
 
-#include "function.h"
+#include "schedule.h"
+#include "refcountptr.h"
 
 namespace SC
 {
 
 
+class LoweredFuncNode
+{
+public:
+    Stmt body;
+};
+
+class LoweredFunc : public RefCountPtr<const LoweredFuncNode>
+{
+public:
+    LoweredFunc() : RefCountPtr() {}
+    explicit LoweredFunc(const LoweredFuncNode* p) :
+        RefCountPtr(p)
+    {}
+    const LoweredFuncNode* get() const { return static_cast<const LoweredFuncNode*>(ptr); }
+    const LoweredFuncNode* operator->() const { return get(); }
+    const LoweredFuncNode& operator*() const { return *get(); }
+
+};
+
+
+LoweredFunc lower(Schedule s);
 
 } // namespace SC
 

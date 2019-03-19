@@ -6,12 +6,14 @@
  ************************************************************************/
 
 #include "computation.h"
+#include "schedule.h"
 #include "util.h"
 
 namespace SC
 {
 
-Computation NestLoopComNode::make(const std::string& name,
+Computation NestLoopComNode::make(Schedule& s,
+        const std::string& name,
         std::vector<Iter> root_iters,
         std::vector<Iter> reduce_iters,
         std::vector<Stmt> body)
@@ -29,9 +31,13 @@ Computation NestLoopComNode::make(const std::string& name,
     n->root_iters = std::move(root_iters);
     n->reduce_iters = std::move(reduce_iters);
     n->body = std::move(body);
-    return n;
+    Computation cp(n);
+    s.addComputation(cp);
+    return cp;
 }
-Computation NestLoopComNode::make(const std::string& name,
+
+Computation NestLoopComNode::make(Schedule& s,
+        const std::string& name,
         std::vector<Iter> root_iters,
         std::vector<Stmt> body)
 {
@@ -41,6 +47,8 @@ Computation NestLoopComNode::make(const std::string& name,
     n->name = name;
     n->root_iters = std::move(root_iters);
     n->body = std::move(body);
+    Computation cp(n);
+    s.addComputation(cp);
     return n;
 }
 

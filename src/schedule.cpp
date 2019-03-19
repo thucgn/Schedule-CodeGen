@@ -9,6 +9,7 @@
 #include <unordered_set>
 #include "util.h"
 #include "hash.h"
+#include "ir.h"
 
 namespace 
 {
@@ -163,6 +164,15 @@ Schedule ScheduleNode::make(std::vector<Stage> ss)
     ScheduleNode* s = new ScheduleNode();
     s->stages = std::move(ss);
     return Schedule(s);
+}
+
+Stage Schedule::addComputation(Computation cp)
+{
+    CHECK_IF(get()->cp2stage.count(cp) == 0, "Dumplicated cp");
+    Stage s = StageNode::make(cp);
+    get()->stages.push_back(s);
+    get()->cp2stage.emplace(cp, s);
+    return s;
 }
 
 } // namespace SC

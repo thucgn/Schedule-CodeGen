@@ -17,6 +17,7 @@ namespace SC
 {
 
 class Computation;
+class Schedule;
 
 
 /**
@@ -93,11 +94,13 @@ public:
 
     const std::vector<Iter>& rootIters() const override{ return root_iters; }
 
-    static Computation make(const std::string& name, 
+    static Computation make(Schedule& s,
+            const std::string& name, 
             std::vector<Iter> root_iters, 
             std::vector<Iter> reduce_iters,
             std::vector<Stmt> body);
-    static Computation make(const std::string& name,
+    static Computation make(Schedule& s,
+            const std::string& name,
             std::vector<Iter> root_iters,
             std::vector<Stmt> body);
 };

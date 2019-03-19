@@ -10,8 +10,10 @@
 
 #include <vector>
 #include <memory>
+#include <unordered_map>
 #include "refcountptr.h"
 #include "computation.h"
+#include "hash.h"
 
 namespace SC
 {
@@ -115,6 +117,11 @@ public:
      */
     std::vector<Stage> stages;
 
+    /***
+     * \bref record the relation of computation to stage
+     */
+    std::unordered_map<Computation, Stage> cp2stage;
+
     static Schedule make(std::vector<Computation> cps);
     
     static Schedule make(std::vector<Stage> ss);
@@ -149,6 +156,14 @@ public:
     explicit Schedule(ScheduleNode* p) : 
         RefCountPtr<ScheduleNode>(p)
     {}
+
+    Stage addComputation(Computation cp);
+
+    Stage& operator[](Computation cp) const
+    {
+        CHECK_IF(get()->cp2stage.count(cp), "no such cp");
+        return (get()->cp2stage)[cp];
+    }
 };
 
 

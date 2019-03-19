@@ -11,6 +11,7 @@
 #include <functional>
 
 #include "iter.h"
+#include "computation.h"
 
 
 namespace std
@@ -34,6 +35,9 @@ struct hash_ref
  */
 template <>
 struct hash<::SC::Iter> : public hash_ref<::SC::Iter> {};
+
+template<>
+struct hash<::SC::Computation> : public hash_ref<::SC::Computation> {};
 
 } // namespace std
 
