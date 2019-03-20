@@ -299,7 +299,7 @@ public:
     explicit Expr(int16_t v) : 
         NodeRef(IntImm::make(Int(16), v))
     {}
-    explicit Expr(int32_t v) : 
+    Expr(int32_t v) : 
         NodeRef(IntImm::make(Int(32), v))
     {}
     explicit Expr(int64_t v) : 
@@ -317,7 +317,7 @@ public:
     explicit Expr(uint64_t v) : 
         NodeRef(IntImm::make(UInt(64), v))
     {}
-    explicit Expr(float v) :
+    Expr(float v) :
         NodeRef(FloatImm::make(Float(32), v))
     {}
     explicit Expr(double v) :

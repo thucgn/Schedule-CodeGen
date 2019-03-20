@@ -352,6 +352,9 @@ public:
     Expr lhs;
     Expr rhs;
 
+    /**
+     * \bref note: reduce_iters is not used
+     */
     std::vector<Iter> reduce_iters;
      
     static Stmt make(ReduceType reduce_type,

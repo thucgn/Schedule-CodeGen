@@ -9,7 +9,9 @@
 #include <unordered_set>
 #include "util.h"
 #include "hash.h"
+#include "node.h"
 #include "ir.h"
+#include "iroperator.h"
 
 namespace 
 {
@@ -67,10 +69,12 @@ Stage& Stage::split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor)
             " cannot split the iter type");
 
     // note that the range have not been setted
-    Iter outer = IterNode::make( x->iter_type, Range(), 
+    Range outer_range{x->range.min, (x->range.extent+factor-1)/factor};
+    Range inner_range{0, factor};
+    Iter outer = IterNode::make( x->iter_type, outer_range, 
             x->var.derive(".out"),
             x->iter_sche);
-    Iter inner = IterNode::make( x->iter_type, Range(),
+    Iter inner = IterNode::make( x->iter_type, inner_range,
             x->var.derive(".in"),
             x->iter_sche);
     //set the reference

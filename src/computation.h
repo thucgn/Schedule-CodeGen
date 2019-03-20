@@ -33,6 +33,7 @@ public:
      * \bref root iters represents the outer most loops
      */
     virtual const std::vector<Iter>& rootIters() const = 0; 
+    virtual Stmt buildBody() const = 0;
 };
 
 /**
@@ -93,6 +94,8 @@ public:
     static const FunctionNodeType _node_type = FunctionNodeType::NEST_LOOP;
 
     const std::vector<Iter>& rootIters() const override{ return root_iters; }
+
+    Stmt buildBody() const override;
 
     static Computation make(Schedule& s,
             const std::string& name, 

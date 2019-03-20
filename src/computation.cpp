@@ -8,6 +8,7 @@
 #include "computation.h"
 #include "schedule.h"
 #include "util.h"
+#include "ir.h"
 
 namespace SC
 {
@@ -50,6 +51,17 @@ Computation NestLoopComNode::make(Schedule& s,
     Computation cp(n);
     s.addComputation(cp);
     return n;
+}
+
+Stmt NestLoopComNode::buildBody() const
+{
+    if(body.size() == 1)
+        return body[0];
+
+    Stmt ret = Block::make(body[0], body[1]);
+    for(unsigned i = 2;i < body.size(); i ++)
+        ret = Block::make(ret, body[i]);
+    return ret;
 }
 
 

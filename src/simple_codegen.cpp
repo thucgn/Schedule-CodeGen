@@ -300,7 +300,8 @@ void SimpleCodegenC::visit(const Store* n)
 
 void SimpleCodegenC::visit(const Reduce* n)
 {
-    os << indent << " reduce ";
+    //os << indent << " reduce ";
+    os << indent;
     n->lhs.accept(this);
     os << " = ";
     n->rhs.accept(this);

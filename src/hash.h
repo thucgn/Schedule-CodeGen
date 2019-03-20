@@ -10,6 +10,7 @@
 
 #include <functional>
 
+#include "node.h"
 #include "iter.h"
 #include "computation.h"
 
@@ -39,6 +40,8 @@ struct hash<::SC::Iter> : public hash_ref<::SC::Iter> {};
 template<>
 struct hash<::SC::Computation> : public hash_ref<::SC::Computation> {};
 
+template<>
+struct hash<::SC::VarExpr> : public hash_ref<::SC::VarExpr>{};
 } // namespace std
 
 
