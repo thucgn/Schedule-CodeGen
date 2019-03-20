@@ -47,7 +47,7 @@ public:
 class Tensor : public TensorBase
 {
 public:
-
+    using ContainerType = TensorNode;
     Tensor() : TensorBase() {}
     explicit Tensor(const TensorNode* p) : TensorBase(p) {}
 

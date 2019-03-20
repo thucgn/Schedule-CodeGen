@@ -170,6 +170,11 @@ Schedule ScheduleNode::make(std::vector<Stage> ss)
     return Schedule(s);
 }
 
+Schedule ScheduleNode::make()
+{
+    return Schedule(new ScheduleNode());
+}
+
 Stage Schedule::addComputation(Computation cp)
 {
     CHECK_IF(get()->cp2stage.count(cp) == 0, "Dumplicated cp");

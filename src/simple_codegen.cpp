@@ -205,21 +205,23 @@ void SimpleCodegenC::visit(const Call* n)
     if(n->call_type == CallType::TENSOR_ACCESS)
     {
         os << n->name << "[";
-        for(auto& arg : n->args)
+        for(unsigned i = 0;i < n->args.size()-1; i ++)
         {
-            arg.accept(this);
-            os << ",";
+            n->args[i].accept(this);
+            os << ", ";
         }
-        os << ')';
+        n->args.back().accept(this);
+        os << ']';
     }
     else
     {
         os << n->name << "(";
-        for(auto& arg : n->args)
+        for(unsigned i = 0;i < n->args.size()-1; i ++)
         {
-            arg.accept(this);
+            n->args[i].accept(this);
             os << ", ";
         }
+        n->args.back().accept(this);
         os << ')';
     
     }
@@ -303,8 +305,20 @@ void SimpleCodegenC::visit(const Reduce* n)
     //os << indent << " reduce ";
     os << indent;
     n->lhs.accept(this);
-    os << " = ";
+    switch(n->reduce_type)
+    {
+        case ReduceType::ADD:
+            os << " += ";
+            break;
+    }
     n->rhs.accept(this);
+    os << "; \n";
+}
+
+void SimpleCodegenC::visit(const Evaluate* n)
+{
+    os << indent << "evaluate ";
+    n->value.accept(this);
     os << "; \n";
 }
 

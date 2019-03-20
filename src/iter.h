@@ -105,6 +105,7 @@ inline void destroy<IterNode>(const IterNode* p)
 class Iter : public RefCountPtr<IterNode>
 {
 public:
+    using ContainerType = IterNode;
     Iter() : RefCountPtr<IterNode>() {}
     explicit Iter(IterNode* p) : 
         RefCountPtr<IterNode>(p)

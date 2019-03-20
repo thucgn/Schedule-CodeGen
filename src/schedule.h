@@ -126,6 +126,8 @@ public:
     
     static Schedule make(std::vector<Stage> ss);
 
+    static Schedule make();
+
 private:
     mutable RefCount ref_count;
 

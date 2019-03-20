@@ -19,7 +19,21 @@ class LoweredFuncNode
 {
 public:
     Stmt body;
+    mutable RefCount ref_count;
 };
+
+template <>
+inline RefCount& ref_count(const LoweredFuncNode* p)
+{
+    return p->ref_count;
+}
+
+template <>
+inline void destroy(const LoweredFuncNode* p)
+{
+    if(p)
+        delete p;
+}
 
 class LoweredFunc : public RefCountPtr<const LoweredFuncNode>
 {

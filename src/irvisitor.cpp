@@ -137,5 +137,10 @@ void IRVisitor::visit(const Reduce* n)
         iter->var.accept(this);
 }
 
+void IRVisitor::visit(const Evaluate* n)
+{
+    n->value.accept(this);
+}
+
 } // namespace SC
 

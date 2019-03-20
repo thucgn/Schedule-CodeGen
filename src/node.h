@@ -57,6 +57,7 @@ enum class NodeType : uint8_t
     IF_THEN_ELSE,
     STORE,
     REDUCE,
+    EVALUEATE,
 };
 
 
@@ -351,6 +352,7 @@ public:
 class VarExpr : public Expr
 {
 public:
+    using ContainerType = Variable;
     VarExpr() : Expr() {}
     explicit VarExpr(const BaseExprNode* node) : Expr(node) {}
 

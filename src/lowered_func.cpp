@@ -43,8 +43,8 @@ namespace SC
 class GlobalNameManager
 {
 private:
-    std::atomic<int> var_cnt;
-    std::atomic<int> iter_cnt;
+    std::atomic<int> var_cnt{0};
+    std::atomic<int> iter_cnt{0};
     std::unordered_map<VarExpr, std::string> var2name;
     std::unordered_map<Iter, std::string> iter2name;
 public:
@@ -89,6 +89,7 @@ Stmt lowerStage(Stage& s)
     //construct for loop
     const auto& all_iters = s->all_iters;
     std::vector<Stmt> loops;
+    Stmt no_op = Evaluate::make(0);
     for(auto rit=all_iters.begin(); rit != all_iters.end(); rit ++)
     {
         auto loop = For::make(
@@ -96,11 +97,11 @@ Stmt lowerStage(Stage& s)
                 (*rit)->var,
                 (*rit)->range.min,
                 (*rit)->range.extent,
-                Stmt());
+                no_op);
         loops.emplace_back(std::move(loop));
     }
     
-    const auto& reduce_iters = s->original_cp->rootIters();
+    /*const auto& reduce_iters = s->original_cp->rootIters();
     for(auto rit=reduce_iters.begin(); rit != reduce_iters.end(); rit ++)
     {
         auto loop = For::make(
@@ -108,9 +109,9 @@ Stmt lowerStage(Stage& s)
                 (*rit)->var,
                 (*rit)->range.min,
                 (*rit)->range.extent,
-                Stmt());
+                no_op);
         loops.emplace_back(std::move(loop));
-    }
+    }*/
 
     // deal with body of computation
     Stmt innermost_body = s->original_cp->buildBody();

@@ -42,6 +42,7 @@ public:
 class Computation : public Function
 {
 public:
+    using ContainerType = ComputationNode;
     Computation() : Function() {}
     Computation(const ComputationNode* p) : Function(p) {}
 

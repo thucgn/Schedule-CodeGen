@@ -356,12 +356,21 @@ public:
      * \bref note: reduce_iters is not used
      */
     std::vector<Iter> reduce_iters;
+
+    static const NodeType _node_type = NodeType::REDUCE;
      
     static Stmt make(ReduceType reduce_type,
             Expr lhs, Expr rhs,
             std::vector<Iter> reduce_iters);
 };
 
+class Evaluate : public StmtNode<Evaluate>
+{
+public:
+    Expr value;
+    static const NodeType _node_type = NodeType::EVALUEATE;
+    static Stmt make(Expr v);
+};
 
 } // SC
 

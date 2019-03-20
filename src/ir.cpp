@@ -226,4 +226,12 @@ Stmt Reduce::make(ReduceType reduce_type,
     return n;
 }
 
+Stmt Evaluate::make(Expr v)
+{
+    CHECK_IF(v.notNull(), "v cannot be null");
+    Evaluate* n = new Evaluate();
+    n->value = std::move(v);
+    return n;
+}
+
 } // namespace SC

@@ -155,5 +155,26 @@ Stmt IRMutator::mutateNode(const Store* n)
         return Store::make(new_lhs, new_rhs);
 }
 
+Stmt IRMutator::mutateNode(const Reduce* n)
+{
+    Expr new_lhs = mutate(n->lhs);
+    Expr new_rhs = mutate(n->rhs);
+    if(new_lhs.sameAs(n->lhs) && new_rhs.sameAs(n->rhs))
+        return n;
+    else
+        return Reduce::make(n->reduce_type, 
+                new_lhs, new_rhs, 
+                n->reduce_iters);
+}
+
+Stmt IRMutator::mutateNode(const Evaluate* n)
+{
+    Expr new_value = mutate(n->value);
+    if(new_value.sameAs(n->value))
+        return n;
+    else
+        return Evaluate::make(new_value);
+}
+
 } // namespace SC
 

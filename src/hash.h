@@ -27,7 +27,8 @@ struct hash_ref
 {
     std::size_t operator()(T const& o) const noexcept
     {
-        return std::hash<void*>{}(reinterpret_cast<void*>(o.get()));
+        //return std::hash<void*>{}(reinterpret_cast<void*>(o.get()));
+        return std::hash<const typename T::ContainerType*>{}(o.get());
     }
 };
 
