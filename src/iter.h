@@ -10,6 +10,7 @@
 
 #include "node.h"
 #include "refcountptr.h"
+#include <array>
 
 namespace SC
 {
@@ -110,8 +111,38 @@ public:
     explicit Iter(IterNode* p) : 
         RefCountPtr<IterNode>(p)
     {}
-
     
+    /*Iter(const std::string& label,
+            Range range,
+            IterType iter_type = IterType::PRARLLEL);*/
+    /**
+     * \bref construct an Iter.
+     * Note: range require a argument list {min, extent},  not {min, max}
+     */
+    Iter(const std::string& label,
+            Range range,
+            IterType iter_type = IterType::PRARLLEL)
+        : RefCountPtr<IterNode>( IterNode::make(
+                    iter_type, 
+                    range,
+                    Var(label),
+                    IterSche::NO_SCHEDULE))
+    {}
+
+
+    /**
+     * \bref construct an Iter.
+     * Note: extent means the range of Iter is {0, extent}
+     */
+    Iter(const std::string& label,
+            Expr extent,
+            IterType iter_type = IterType::PRARLLEL)
+        : RefCountPtr<IterNode>( IterNode::make(
+                    iter_type,
+                    Range(0, extent),
+                    Var(label),
+                    IterSche::NO_SCHEDULE))
+    {}
 
     /**
      * \bref return the var

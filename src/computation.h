@@ -10,6 +10,7 @@
 
 #include "function.h"
 #include "iter.h"
+#include "ir.h"
 #include <vector>
 
 
@@ -109,6 +110,44 @@ public:
             std::vector<Stmt> body);
 };
 
+/**
+ * \bref lhs += rhs
+ */
+inline Stmt reduce_add(Expr lhs, Expr rhs)
+{
+    return Reduce::make(ReduceType::ADD, std::move(lhs), std::move(rhs), {});
+}
+
+/**
+ * \bref nest loop computation
+ */
+inline Computation nest_loop_computation(
+        Schedule& s, 
+        const std::string& name,
+        std::vector<Iter> root_iters,
+        std::vector<Iter> reduce_iters,
+        std::vector<Stmt> body)
+{
+    return NestLoopComNode::make(s,
+            name, std::move(root_iters), 
+            std::move(reduce_iters), 
+            std::move(body));
+}
+
+/**
+ * \bref nest loop computation without reduce_iters
+ */
+inline Computation nest_loop_computation(
+        Schedule& s,
+        const std::string& name,
+        std::vector<Iter> root_iters,
+        std::vector<Stmt> body)
+{
+    return NestLoopComNode::make(s,
+            name, std::move(root_iters), 
+            {},
+            std::move(body));
+}
 
 } // namespace SC
 

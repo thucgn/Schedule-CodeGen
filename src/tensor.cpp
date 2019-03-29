@@ -26,6 +26,12 @@ Tensor TensorNode::make(const std::string& name,
     return Tensor(n);
 }
 
+Tensor::Tensor(const std::string& name, 
+        std::vector<Expr> shape,
+        DataType type)
+    :Tensor(TensorNode::make(name,
+                type, shape, Computation(), 0))
+{}
 
 Expr Tensor::operator()(std::vector<Expr> indices) const
 {

@@ -22,5 +22,40 @@ Iter IterNode::make(IterType iter_type, Range range,
     // no need to initialize ref_count, which has a proper default constructor.
     return Iter(n);
 }
+
+/*Iter::Iter(const std::string& label,
+        Range range, IterType iter_type)
+{
+    IterNode* n = new IterNode();
+    Var v(label);
+    n->iter_type = iter_type;
+    n->range = std::move(range);
+    n->var = std::move(v);
+    n->iter_sche = IterSche::NO_SCHEDULE;
+    this->ptr = n;
+}*/
+
+/*Iter::Iter(const std::string& label,
+        std::array<Expr, 2> range, IterType iter_type)
+{
+    IterNode* n = new IterNode();
+    Var v(label);
+    n->iter_type = iter_type;
+    n->range = Range(range[0], range[1]);
+    n->var = std::move(v);
+    n->iter_sche = IterSche::NO_SCHEDULE;
+    this->ptr = n;
+}*/
+/*Iter::Iter(const std::string& label,
+        Expr extent, IterType iter_type)
+{
+    IterNode* n = new IterNode();
+    Var v(label);
+    n->iter_type = iter_type;
+    n->range = Range(0, extent);
+    n->var = std::move(v);
+    n->iter_sche = IterSche::NO_SCHEDULE;
+    this->ptr = n;
+}*/
 } // namespace SC
 

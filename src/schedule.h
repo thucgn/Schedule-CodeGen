@@ -159,6 +159,8 @@ public:
         RefCountPtr<ScheduleNode>(p)
     {}
 
+    static Schedule empty_schedule() { return ScheduleNode::make(); }
+
     Stage addComputation(Computation cp);
 
     Stage& operator[](Computation cp) const

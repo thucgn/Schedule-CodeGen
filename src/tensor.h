@@ -50,6 +50,13 @@ public:
     using ContainerType = TensorNode;
     Tensor() : TensorBase() {}
     explicit Tensor(const TensorNode* p) : TensorBase(p) {}
+    /**
+     * \bref currently, we just use the name and shape
+     * No bound inference
+     */
+    Tensor(const std::string& name,
+            std::vector<Expr> shape,
+            DataType type = Float(32));
 
     const TensorNode* get() const { return (const TensorNode*)ptr; }
     const TensorNode* operator->() const { return get(); }
