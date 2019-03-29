@@ -397,7 +397,7 @@ class StmtCompare
 public:
     bool operator()(const Stmt& o1, const Stmt& o2) const
     {
-        return (o1.get() < o2.get());
+        return (o1.get() == o2.get());
     }
 };
 
@@ -410,7 +410,7 @@ class ExprCompare
 public:
     bool operator()(const Expr& o1, const Expr& o2) const
     {
-        return (o1.get() < o2.get());
+        return (o1.get() == o2.get());
     }
 };
 

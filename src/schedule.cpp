@@ -97,6 +97,7 @@ Stage& Stage::split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor)
         }
     }
 
+    //LOG("position of %s : %d", x->var->label.c_str(), (int)pos);
     // record split
     get()->split_results.emplace_back(SplitResult(x, outer, inner, factor));
 

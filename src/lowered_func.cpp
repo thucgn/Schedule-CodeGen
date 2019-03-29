@@ -11,16 +11,19 @@
 #include <unordered_map>
 #include "ir.h"
 #include "hash.h"
+#include "iroperator.h"
+#include <unordered_set>
 
 namespace 
 {
 
-::SC::ForType iter2ForType(::SC::IterType type)
+::SC::ForType iter2ForType(::SC::IterType it, ::SC::IterSche st)
 {
     using ::SC::ForType;
     using ::SC::IterType;
+    using ::SC::IterSche;
     ForType ret;
-    switch(type)
+    /*switch(type)
     {
         case IterType::PRARLLEL:
         case IterType::THREAD_ID:
@@ -30,6 +33,16 @@ namespace
         case IterType::ORDERED:
         case IterType::OPAQUE:
             ret = ForType::SERIAL;
+            break;
+    }*/
+    switch(st)
+    {
+        case IterSche::NO_SCHEDULE:
+        case IterSche::VECTORIZED:
+            ret = ForType::SERIAL;
+            break;
+        case IterSche::PARALLELED:
+            ret = ForType::PARALLEL;
             break;
     }
     return ret;
@@ -45,8 +58,8 @@ class GlobalNameManager
 private:
     std::atomic<int> var_cnt{0};
     std::atomic<int> iter_cnt{0};
-    std::unordered_map<VarExpr, std::string> var2name;
-    std::unordered_map<Iter, std::string> iter2name;
+    std::unordered_map<VarExpr, std::string, std::hash<VarExpr>, SC::ExprCompare> var2name;
+    std::unordered_map<Iter, std::string, std::hash<Iter>, SC::IterCompare> iter2name;
 public:
     bool contains(VarExpr v) const { return var2name.count(v) > 0; }
     bool contains(Iter v) const { return iter2name.count(v) > 0; }
@@ -80,6 +93,17 @@ public:
 };
 
 
+void collect_iter_to_splitresult(
+        std::unordered_map<VarExpr, int, std::hash<VarExpr>, SC::ExprCompare>& itervar2sr,
+        const std::vector<SplitResult>& srs)
+{
+    for(unsigned i = 0;i < srs.size(); i ++)
+    {
+        itervar2sr.insert(std::make_pair(srs[i].outer->var, i));
+        itervar2sr.insert(std::make_pair(srs[i].inner->var, i));
+    }
+}
+
 /**
  * \bref just build a simple nest loop
  */
@@ -87,13 +111,13 @@ Stmt lowerStage(Stage& s)
 {
 
     //construct for loop
-    const auto& all_iters = s->all_iters;
+    const auto& root_iters = s->root_iters;
     std::vector<Stmt> loops;
     Stmt no_op = Evaluate::make(0);
-    for(auto rit=all_iters.begin(); rit != all_iters.end(); rit ++)
+    for(auto rit=root_iters.begin(); rit != root_iters.end(); rit ++)
     {
         auto loop = For::make(
-                iter2ForType((*rit)->iter_type),
+                iter2ForType((*rit)->iter_type, (*rit)->iter_sche),
                 (*rit)->var,
                 (*rit)->range.min,
                 (*rit)->range.extent,
@@ -118,9 +142,32 @@ Stmt lowerStage(Stage& s)
     Stmt ret = innermost_body;
     if(loops.size() > 0)
     {
+        //map of <itervar, splitresult&>
+        std::unordered_map<VarExpr, int, std::hash<VarExpr>, SC::ExprCompare> itervar2sr;
+        collect_iter_to_splitresult(itervar2sr, s->split_results);
+        std::unordered_set<int> has_accessed;
+
         for(auto rit = loops.rbegin(); rit!=loops.rend(); rit ++)
         {
             const For* node = rit->cast_to<For>();
+            // loop generated from split
+            if(itervar2sr.count(node->var))
+            {
+                // index of sr in splitresult vector
+                int index = itervar2sr[node->var];
+                if(!has_accessed.count(index))
+                {
+                    // rebase statement
+                    SplitResult& sr = s->split_results[index];
+                    Stmt rebase = Store::make(sr.x, sr.outer*sr.factor+sr.inner);
+                    Stmt bound = IfThenElse::make(
+                            sr.x < sr.outer.upperBound(),
+                            ret, Stmt());
+                    ret = Block::make(rebase, bound);
+                    // record
+                    has_accessed.insert(index);
+                }
+            }
             ret = For::make(
                     node->for_type,
                     node->var,

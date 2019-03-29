@@ -152,8 +152,19 @@ public:
     {
         return ptr->var;
     }
+
+    Expr lowerBound();
+    Expr upperBound();
 };
 
+class IterCompare
+{
+public:
+    bool operator()(const Iter& o1, const Iter& o2) const
+    {
+        return (o1.get() == o2.get());
+    }
+};
 
 } // namespace SC
 

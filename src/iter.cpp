@@ -6,6 +6,7 @@
  ************************************************************************/
 
 #include "iter.h"
+#include "iroperator.h"
 
 namespace SC
 {
@@ -21,6 +22,14 @@ Iter IterNode::make(IterType iter_type, Range range,
     n->iter_sche = iter_sche;
     // no need to initialize ref_count, which has a proper default constructor.
     return Iter(n);
+}
+
+Expr Iter::upperBound() {
+    return get()->range.min + get()->range.extent;
+}
+
+Expr Iter::lowerBound() {
+    return get()->range.min;
 }
 
 /*Iter::Iter(const std::string& label,
