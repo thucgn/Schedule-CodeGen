@@ -6,13 +6,14 @@
  ************************************************************************/
 
 #include "lowered_func.h"
+#include <unordered_set>
 #include <atomic>
 #include <string>
 #include <unordered_map>
 #include "ir.h"
 #include "hash.h"
 #include "iroperator.h"
-#include <unordered_set>
+#include "constantfold_pass.h"
 
 namespace 
 {
@@ -188,21 +189,27 @@ Stmt buildBody(Schedule& s)
     Stmt body = Block::make(
             lowerStage(s->stages[0]),
             lowerStage(s->stages[1]));
+
     for(unsigned i = 2; i < s->stages.size(); i ++)
     {
         body = Block::make(
                 body,
                 lowerStage(s->stages[i]));
     }
+
+
     return body;
 }
 
 LoweredFunc lower(Schedule s)
 {
     Stmt body = buildBody(s); 
+    ConstantFoldPass cf;
+    body = body->mutate_stmt(&cf);
     
     LoweredFuncNode* n = new LoweredFuncNode();
     n->body = std::move(body);
+
     return LoweredFunc(n);
 }
 
