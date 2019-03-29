@@ -27,7 +27,6 @@ namespace SC
 
 Expr ConstantFoldPass::mutateNode(const Add* n)
 {
-    LOG("mutate add");
     Expr new_a = mutate(n->a);
     Expr new_b = mutate(n->b);
     if(is_const_number(new_a) && is_const_number(new_b))

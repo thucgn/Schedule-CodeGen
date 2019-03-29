@@ -49,7 +49,7 @@ public:
 };
 
 
-LoweredFunc lower(Schedule s);
+LoweredFunc lower(Schedule s, bool optimize = true);
 
 } // namespace SC
 

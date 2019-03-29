@@ -106,6 +106,8 @@ public:
      */
     Stage& split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor);
     Stage& reorder(const std::vector<Iter>& ordered_iters);
+    Stage& parallel(const Iter iter);
+    Stage& vectorization(const Iter iter);
 
 };
 

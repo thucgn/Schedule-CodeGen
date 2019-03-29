@@ -162,7 +162,7 @@ Stmt lowerStage(Stage& s)
                     SplitResult& sr = s->split_results[index];
                     Stmt rebase = Store::make(sr.x, sr.outer*sr.factor+sr.inner);
                     Stmt bound = IfThenElse::make(
-                            sr.x < sr.outer.upperBound(),
+                            sr.x < sr.x.upperBound(),
                             ret, Stmt());
                     ret = Block::make(rebase, bound);
                     // record
@@ -201,11 +201,14 @@ Stmt buildBody(Schedule& s)
     return body;
 }
 
-LoweredFunc lower(Schedule s)
+LoweredFunc lower(Schedule s, bool optimize)
 {
     Stmt body = buildBody(s); 
-    ConstantFoldPass cf;
-    body = body->mutate_stmt(&cf);
+    if(optimize)
+    {
+        ConstantFoldPass cf;
+        body = body->mutate_stmt(&cf);
+    }
     
     LoweredFuncNode* n = new LoweredFuncNode();
     n->body = std::move(body);

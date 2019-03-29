@@ -151,6 +151,25 @@ Stage& Stage::reorder(const std::vector<Iter>& ordered_iters)
     return *this;
 }
 
+Stage& Stage::parallel(const Iter iter)
+{
+    size_t pos = findIter(get()->root_iters, iter);
+    CHECK_IF(pos < get()->root_iters.size(), "cannot find the parallel iter:%s", iter->var->label.c_str());
+    Iter& target_iter = get()->root_iters[pos];
+    CHECK_IF(target_iter->iter_type == IterType::PRARLLEL, "cannot parallel this loop, because the itertype cannot be paralleld");
+    get()->root_iters[pos]->iter_sche = IterSche::PARALLELED;
+    return *this;
+}
+
+Stage& Stage::vectorization(const Iter iter)
+{
+    size_t pos = findIter(get()->root_iters, iter);
+    CHECK_IF(pos < get()->root_iters.size(), "cannot find the vectorization iter:%s", iter->var->label.c_str());
+    Iter& target_iter = get()->root_iters[pos];
+    CHECK_IF(target_iter->iter_type == IterType::PRARLLEL, "cannot vectorized this loop, because the itertype cannot be vectorized");
+    return *this;
+}
+
 Schedule ScheduleNode::make(std::vector<Computation> cps)
 {
     CHECK_IF(cps.size() > 0, "computation vector is empty");
