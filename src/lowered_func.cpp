@@ -49,6 +49,42 @@ namespace
     return ret;
 }
 
+/**
+ * \bref check a can be divided by b
+ */
+bool check_divided(SC::Expr a, SC::Expr b)
+{
+    SC::ConstantFoldPass cf;   
+    SC::Expr new_a = a->mutate_expr(&cf);
+    SC::Expr new_b = b->mutate_expr(&cf);
+    if((new_a.is_type<SC::IntImm>() || new_a.is_type<SC::UIntImm>())
+            &&(new_b.is_type<SC::IntImm>() || new_b.is_type<SC::UIntImm>()))
+    {
+        if(new_a.is_type<SC::IntImm>() && new_b.is_type<SC::IntImm>())
+        {
+            return (new_a.cast_to<SC::IntImm>()->value % 
+                    new_b.cast_to<SC::IntImm>()->value == 0);
+        }
+        else if(new_a.is_type<SC::IntImm>() && new_b.is_type<SC::UIntImm>())
+        {
+            return (new_a.cast_to<SC::IntImm>()->value % 
+                    new_b.cast_to<SC::UIntImm>()->value == 0);
+        }
+        else if(new_a.is_type<SC::UIntImm>() && new_b.is_type<SC::IntImm>())
+        {
+            return (new_a.cast_to<SC::UIntImm>()->value % 
+                    new_b.cast_to<SC::IntImm>()->value == 0);
+        }
+        else if(new_a.is_type<SC::UIntImm>() && new_b.is_type<SC::UIntImm>())
+        {
+            return (new_a.cast_to<SC::UIntImm>()->value % 
+                    new_b.cast_to<SC::UIntImm>()->value == 0);
+        }
+    }
+
+    return false;
+}
+
 } // namespace
 
 namespace SC
@@ -160,11 +196,19 @@ Stmt lowerStage(Stage& s)
                 {
                     // rebase statement
                     SplitResult& sr = s->split_results[index];
+
                     Stmt rebase = Store::make(sr.x, sr.outer*sr.factor+sr.inner);
-                    Stmt bound = IfThenElse::make(
-                            sr.x < sr.x.upperBound(),
-                            ret, Stmt());
-                    ret = Block::make(rebase, bound);
+                    if(check_divided(sr.x->range.extent, sr.factor))
+                    {
+                        ret = Block::make(rebase, ret);
+                    }
+                    else
+                    {
+                        Stmt bound = IfThenElse::make(
+                                sr.x < sr.x.upperBound(),
+                                ret, Stmt());
+                        ret = Block::make(rebase, bound);
+                    }
                     // record
                     has_accessed.insert(index);
                 }

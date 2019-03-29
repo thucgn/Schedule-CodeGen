@@ -67,8 +67,7 @@ Stage& Stage::split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor)
             || x->iter_type == IterType::REDUCTION
             || x->iter_type == IterType::ORDERED, 
             " cannot split the iter type");
-
-    // note that the range have not been setted
+    
     Range outer_range{x->range.min, (x->range.extent+factor-1)/factor};
     Range inner_range{0, factor};
     Iter outer = IterNode::make( x->iter_type, outer_range, 
