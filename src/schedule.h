@@ -33,6 +33,16 @@ struct SplitResult
     {}
 };
 
+struct FuseResult
+{
+    Iter outer;
+    Iter inner;
+    Iter x;
+    FuseResult(Iter outer_, Iter inner_, Iter x_):
+        outer(outer_), inner(inner_), x(x_)
+    {}
+};
+
 
 /**
  * \bref a stage is corresponding to a computation
