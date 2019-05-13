@@ -24,11 +24,11 @@ Iter IterNode::make(IterType iter_type, Range range,
     return Iter(n);
 }
 
-Expr Iter::upperBound() {
+Expr Iter::upperBound() const {
     return get()->range.min + get()->range.extent;
 }
 
-Expr Iter::lowerBound() {
+Expr Iter::lowerBound() const {
     return get()->range.min;
 }
 

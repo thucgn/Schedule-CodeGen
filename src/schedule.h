@@ -14,6 +14,7 @@
 #include "refcountptr.h"
 #include "computation.h"
 #include "hash.h"
+#include "ir.h"
 
 namespace SC
 {

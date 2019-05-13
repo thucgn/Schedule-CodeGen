@@ -14,6 +14,7 @@
 #include "hash.h"
 #include "iroperator.h"
 #include "constantfold_pass.h"
+#include "applysplitresult_pass.h"
 
 namespace 
 {
@@ -52,7 +53,7 @@ namespace
 /**
  * \bref check a can be divided by b
  */
-bool check_divided(SC::Expr a, SC::Expr b)
+/*bool check_divided(SC::Expr a, SC::Expr b)
 {
     SC::ConstantFoldPass cf;   
     SC::Expr new_a = a->mutate_expr(&cf);
@@ -83,7 +84,7 @@ bool check_divided(SC::Expr a, SC::Expr b)
     }
 
     return false;
-}
+}*/
 
 } // namespace
 
@@ -179,6 +180,23 @@ Stmt lowerStage(Stage& s)
     Stmt ret = innermost_body;
     if(loops.size() > 0)
     {
+        for(auto rit = loops.rbegin(); rit!=loops.rend(); rit ++)
+        {
+            const For* node = rit->cast_to<For>();
+            ret = For::make(
+                    node->for_type,
+                    node->var,
+                    node->min,
+                    node->extent,
+                    ret);
+        }    
+    }
+
+    // apply split result
+    ApplySplitResultPass asp(s->split_results);
+    ret = ret->mutate_stmt(&asp);
+    /*if(loops.size() > 0)
+    {
         //map of <itervar, splitresult&>
         std::unordered_map<VarExpr, int, std::hash<VarExpr>, SC::ExprCompare> itervar2sr;
         collect_iter_to_splitresult(itervar2sr, s->split_results);
@@ -220,7 +238,7 @@ Stmt lowerStage(Stage& s)
                     node->extent,
                     ret);
         }    
-    }
+    }*/
 
     return ret;
 }

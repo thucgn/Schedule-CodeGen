@@ -30,6 +30,11 @@ protected:
     Expr mutateNode(const Max* n) override;
 };
 
+/*
+ * check if a can be divided by b
+ */
+bool check_divided(Expr a, Expr b);
+
 } // namespace SC
 
 #endif

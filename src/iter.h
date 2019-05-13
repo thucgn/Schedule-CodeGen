@@ -153,8 +153,8 @@ public:
         return ptr->var;
     }
 
-    Expr lowerBound();
-    Expr upperBound();
+    Expr lowerBound() const;
+    Expr upperBound() const;
 };
 
 class IterCompare

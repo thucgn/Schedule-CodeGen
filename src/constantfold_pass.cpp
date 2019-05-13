@@ -269,4 +269,40 @@ Expr ConstantFoldPass::mutateNode(const Max* n)
     }
 }
 
+bool check_divided(Expr a, Expr b)
+{
+    
+    SC::ConstantFoldPass cf;   
+    SC::Expr new_a = a->mutate_expr(&cf);
+    SC::Expr new_b = b->mutate_expr(&cf);
+    if((new_a.is_type<SC::IntImm>() || new_a.is_type<SC::UIntImm>())
+            &&(new_b.is_type<SC::IntImm>() || new_b.is_type<SC::UIntImm>()))
+    {
+        if(new_a.is_type<SC::IntImm>() && new_b.is_type<SC::IntImm>())
+        {
+            return (new_a.cast_to<SC::IntImm>()->value % 
+                    new_b.cast_to<SC::IntImm>()->value == 0);
+        }
+        else if(new_a.is_type<SC::IntImm>() && new_b.is_type<SC::UIntImm>())
+        {
+            return (new_a.cast_to<SC::IntImm>()->value % 
+                    new_b.cast_to<SC::UIntImm>()->value == 0);
+        }
+        else if(new_a.is_type<SC::UIntImm>() && new_b.is_type<SC::IntImm>())
+        {
+            return (new_a.cast_to<SC::UIntImm>()->value % 
+                    new_b.cast_to<SC::IntImm>()->value == 0);
+        }
+        else if(new_a.is_type<SC::UIntImm>() && new_b.is_type<SC::UIntImm>())
+        {
+            return (new_a.cast_to<SC::UIntImm>()->value % 
+                    new_b.cast_to<SC::UIntImm>()->value == 0);
+        }
+    }
+
+    return false;
+
+}
+
+
 } // namespace SC
