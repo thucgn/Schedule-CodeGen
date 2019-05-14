@@ -15,6 +15,7 @@
 #include "iroperator.h"
 #include "constantfold_pass.h"
 #include "applysplitresult_pass.h"
+#include "applyfuseresult_pass.h"
 
 namespace 
 {
@@ -195,6 +196,9 @@ Stmt lowerStage(Stage& s)
     // apply split result
     ApplySplitResultPass asp(s->split_results);
     ret = ret->mutate_stmt(&asp);
+    // apply fuse result
+    ApplyFuseResultPass  afp(s->fuse_results);
+    ret = ret->mutate_stmt(&afp);
     /*if(loops.size() > 0)
     {
         //map of <itervar, splitresult&>

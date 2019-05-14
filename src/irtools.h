@@ -23,7 +23,7 @@ Stmt collect_blocks(Args... args)
     CHECK_IF(stmts.size() >= 2, "less than 2 statements in collect_blocks");
     int size = stmts.size();
     Stmt ret = Block::make(stmts[size-2], stmts[size-1]);
-    for(int i = size-3;i >= 0; i ++)
+    for(int i = size-3;i >= 0; i --)
         ret = Block::make(stmts[i], ret);
     return ret;
 }

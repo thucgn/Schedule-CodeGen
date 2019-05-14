@@ -40,7 +40,7 @@ struct FuseResult
     Iter x2;
     Iter target;
     FuseResult(Iter x1_, Iter x2_, Iter target_):
-        x1(x1_), x2(x2_), target(target_)
+        x1(std::move(x1_)), x2(std::move(x2_)), target(std::move(target_))
     {}
 };
 
