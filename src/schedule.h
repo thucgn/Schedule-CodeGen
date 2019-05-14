@@ -36,11 +36,11 @@ struct SplitResult
 
 struct FuseResult
 {
-    Iter outer;
-    Iter inner;
-    Iter x;
-    FuseResult(Iter outer_, Iter inner_, Iter x_):
-        outer(outer_), inner(inner_), x(x_)
+    Iter x1;
+    Iter x2;
+    Iter target;
+    FuseResult(Iter x1_, Iter x2_, Iter target_):
+        x1(x1_), x2(x2_), target(target_)
     {}
 };
 
@@ -77,6 +77,12 @@ public:
      * We need pass over the split results and add external info except outer and inner iter.
      */
     std::vector<SplitResult> split_results;
+
+    /**
+     * \bref store the fuse info.
+     * the generated iter starts from 0
+     */
+    std::vector<FuseResult> fuse_results;
 
     static Stage make(Computation cp);
 
@@ -116,6 +122,7 @@ public:
      * a SplitResult will be added to split_results
      */
     Stage& split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor);
+    Stage& fuse(Iter x1, Iter x2, Iter& target);
     Stage& reorder(const std::vector<Iter>& ordered_iters);
     Stage& parallel(const Iter iter);
     Stage& vectorization(const Iter iter);

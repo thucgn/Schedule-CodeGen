@@ -166,6 +166,9 @@ public:
     }
 };
 
+const std::string itertype2str(IterType type);
+const std::string itersche2str(IterSche sche);
+
 } // namespace SC
 
 namespace std

@@ -7,6 +7,8 @@
 
 #include "schedule.h"
 #include <unordered_set>
+#include <cstdlib>
+#include <algorithm>
 #include "util.h"
 #include "hash.h"
 #include "node.h"
@@ -57,6 +59,69 @@ Stage StageNode::make(Computation cp)
     return Stage(s);
 }
 
+Stage& Stage::fuse(Iter x1, Iter x2, Iter& target)
+{
+    CHECK_IF(x1.notNull() && x2.notNull(), "iters to be fused are null");
+    CHECK_IF(x1->iter_type == IterType::PRARLLEL
+            || x1->iter_type == IterType::REDUCTION
+            || x1->iter_type == IterType::ORDERED,
+            "itertype of %s : %s cannot be fused", 
+            x1->var->label.c_str(),
+            itertype2str(x1->iter_type).c_str());
+    CHECK_IF(x2->iter_type == IterType::PRARLLEL
+            || x2->iter_type == IterType::REDUCTION
+            || x2->iter_type == IterType::ORDERED,
+            "itertype of %s : %s cannot be fused", 
+            x2->var->label.c_str(),
+            itertype2str(x2->iter_type).c_str());
+
+    auto& root_iters = get()->root_iters;
+    auto& all_iters = get()->all_iters;
+
+    size_t pos1 = findIter(root_iters, x1);
+    size_t pos2 = findIter(root_iters, x2);
+
+
+    if(pos1 >= root_iters.size()) // not found
+    {
+        if(findIter(all_iters, x1) < all_iters.size())
+            CHECK_IF(false, "iter %s has been fused or splitted", x1->var->label.c_str());
+        else
+            CHECK_IF(false, "there is no this iter : %s", x1->var->label.c_str());
+    }
+    if(pos2 >= root_iters.size()) // not found
+    {
+        if(findIter(all_iters, x2) < all_iters.size())
+            CHECK_IF(false, "iter %s has been fused or splitted", x2->var->label.c_str());
+        else
+            CHECK_IF(false, "there is no this iter : %s", x2->var->label.c_str());
+    }
+
+    size_t pos_min = pos1, pos_max = pos2;
+    if(pos_min > pos_max)
+        std::swap(pos_min, pos_max);
+    CHECK_IF(pos_min+1 == pos_max, "the iters to be fused is not contiguous");
+
+    // the range of target starts from 0, and the real min is set by apply fuse result
+    Range target_range = {0, x1->range.extent * x2->range.extent};
+    Iter target_iter = IterNode::make(x1->iter_type, target_range, 
+            x1->var.derive(std::string(".fuse.") + x2->var->label),
+            x1->iter_sche);
+    target = target_iter;
+
+    get()->fuse_results.emplace_back(FuseResult(x1, x2, target_iter));
+    
+    //substitude x1,x2 in root_iters with target
+    root_iters.erase(root_iters.begin() + pos_max);
+    root_iters.erase(root_iters.begin() + pos_min);
+    root_iters.insert(root_iters.begin()+pos_min, target);
+
+
+    all_iters.emplace_back(std::move(target_iter));
+
+    return *this;
+}
+
 
 Stage& Stage::split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor)
 {
@@ -66,7 +131,7 @@ Stage& Stage::split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor)
     CHECK_IF(x->iter_type == IterType::PRARLLEL
             || x->iter_type == IterType::REDUCTION
             || x->iter_type == IterType::ORDERED, 
-            " cannot split the iter type");
+            " cannot split the iter type %s", itertype2str(x->iter_type).c_str());
     
     Range outer_range{x->range.min, (x->range.extent+factor-1)/factor};
     Range inner_range{0, factor};
@@ -81,17 +146,17 @@ Stage& Stage::split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor)
     inner_ref = inner;
 
     size_t pos = findIter(get()->root_iters, x);
-    if(pos >= get()->root_iters.size()) // not find
+    if(pos >= get()->root_iters.size()) // not found
     {
         pos = findIter(get()->all_iters, x);
         if(pos < get()->all_iters.size())
         {
-            LOG("iter %s to has been splitted", x->var->label.c_str());
+            LOG("iter %s has been splitted", x->var->label.c_str());
             CHECK_IF(false, "iter to be splitted has been splited");
         }
         else
         {
-            LOG("iter %s to has been splitted", x->var->label.c_str());
+            LOG("iter %s has been splitted", x->var->label.c_str());
             CHECK_IF(false, "cannot find the iter");
         }
     }
@@ -124,7 +189,9 @@ Stage& Stage::reorder(const std::vector<Iter>& ordered_iters)
         CHECK_IF(iter->iter_type == IterType::PRARLLEL 
                 || iter->iter_type == IterType::REDUCTION
                 || iter->iter_type == IterType::THREAD_ID,
-                "type of iter:%s of reorder is unvalid", iter->var->label.c_str());
+                "itertype of %s : %s cannot be reordered", 
+                iter->var->label.c_str(), 
+                itertype2str(iter->iter_type).c_str());
         CHECK_IF(count_iters.count(iter) == 0, "iter:%s appear more than once",
                 iter->var->label.c_str());
         count_iters.insert(iter);

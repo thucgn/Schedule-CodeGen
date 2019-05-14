@@ -28,9 +28,9 @@ struct SplitResult;
 class ApplySplitResultPass : public IRMutator
 {
 private:
-    // itervar -> index of split result in srs
+    // itervar -> index of split result in split results
     std::unordered_map<VarExpr, int, std::hash<VarExpr>, SC::ExprCompare> itervar2sr;
-    // accessed indices of split result in srs
+    // accessed indices of split result in split results
     std::unordered_set<int> has_accessed_sr;
     //split results of stagenode
     const std::vector<SplitResult>& srs;

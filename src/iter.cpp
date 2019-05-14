@@ -32,6 +32,36 @@ Expr Iter::lowerBound() const {
     return get()->range.min;
 }
 
+const std::string itertype2str(IterType type)
+{
+    switch(type)
+    {
+        case IterType::PRARLLEL:
+            return "PARALLEL";
+        case IterType::THREAD_ID:
+            return "THREAD_ID";
+        case IterType::REDUCTION:
+            return "REDUCTION";
+        case IterType::ORDERED:
+            return "ORDERED";
+        case IterType::OPAQUE:
+            return "OPAQUE";
+    }
+}
+
+const std::string itersche2str(IterSche type)
+{
+    switch(type)
+    {
+        case IterSche::NO_SCHEDULE:
+            return "NO_SCHEDULE";
+        case IterSche::PARALLELED:
+            return "PARALLELED";
+        case IterSche::VECTORIZED:
+            return "VECTORIZED";
+    }
+}
+
 /*Iter::Iter(const std::string& label,
         Range range, IterType iter_type)
 {
