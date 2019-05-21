@@ -10,6 +10,7 @@
 
 #include <string>
 #include <memory>
+#include <array>
 #include "refcountptr.h"
 #include "node.h"
 #include "iter.h"
@@ -73,33 +74,33 @@ struct SubSpaceNode : BaseSpaceNode
     virtual ~SubSpaceNode() {}
 };
 
-struct SplitSpace : SubSpaceNode<SplitSpace>
+struct SplitSpaceNode : SubSpaceNode<SplitSpaceNode>
 {
     Iter x;    
     std::unique_ptr<NumberSet> candidates;
     static const SpaceType _node_type = SpaceType::SPLIT;
-    static BaseSpace make_space(Iter iter, int min, int max) {
-        SplitSpace* n = new SplitSpace();
+    static BaseSpace make(Iter iter, int min, int max) {
+        SplitSpaceNode* n = new SplitSpaceNode();
         n->x = std::move(iter);
         n->candidates = SC::make_unique<ContinuousSet>(min, max);
         return n;
     }
-    static BaseSpace make_space(Iter iter, const std::vector<int>& candidates)
+    static BaseSpace make(Iter iter, const std::vector<int>& candidates)
     {
-        SplitSpace* n = new SplitSpace();
+        SplitSpaceNode* n = new SplitSpaceNode();
         n->x = std::move(iter);
         n->candidates = SC::make_unique<DiscreteSet>(std::forward<const std::vector<int>&>(candidates));
         return n;
     }
 };
 
-struct ReorderSpace : SubSpaceNode<ReorderSpace>
+struct ReorderSpaceNode : SubSpaceNode<ReorderSpaceNode>
 {
     std::vector< std::vector<Iter> > candidates;
     static const SpaceType _node_type = SpaceType::REORDER;
-    static BaseSpace make_space(const std::vector<std::vector<Iter>>& candidates)
+    static BaseSpace make(const std::vector<std::vector<Iter>>& candidates)
     {
-        ReorderSpace* n = new ReorderSpace;
+        ReorderSpaceNode* n = new ReorderSpaceNode;
         n->candidates = candidates;
         return n;
     }
@@ -111,14 +112,14 @@ struct ReorderSpace : SubSpaceNode<ReorderSpace>
     static 
 };*/
 
-struct UnrollSpace : SubSpaceNode<UnrollSpace>
+struct UnrollSpaceNode : SubSpaceNode<UnrollSpaceNode>
 {
     Iter x;
     std::unique_ptr<NumberSet> candidates;
     static const SpaceType _node_type = SpaceType::UNROLL;
-    static BaseSpace make_space(Iter iter, const std::vector<int>& candidates)
+    static BaseSpace make(Iter iter, const std::vector<int>& candidates)
     {
-        UnrollSpace* n = new UnrollSpace;
+        UnrollSpaceNode* n = new UnrollSpaceNode;
         n->x = std::move(iter);
         n->candidates = SC::make_unique<DiscreteSet>(std::forward<const std::vector<int>&>(candidates));
         return n;
@@ -130,13 +131,24 @@ struct SpaceNode : BaseSpaceNode
     std::vector<BaseSpace> splitspaces;    
     std::vector<BaseSpace> reorderspaces;
     std::vector<BaseSpace> unrollspaces;
+};
 
-    void define_split(Iter x, );
-    void define_reorder();
-    void define_fuse();
-    void define_unroll();
+struct Space : public BaseSpace
+{
+    Space() : BaseSpace() {}
+    Space(const SpaceNode* p) : BaseSpace(p) {}
+
+    SpaceNode* get() const  { return (SpaceNode*)ptr; }
+    SpaceNode* operator->() const  { return get(); }
+    SpaceNode& operator*() const { return *get(); }
+
+    void define_split(Iter x, int min, int max);
+    void define_split(Iter x, const std::vector<int>& candidates);
+    void define_reorder(const std::vector<std::vector<Iter>>& candidates);
+    //void define_fuse();
+    void define_unroll(Iter x, const std::vector<int>& candidates);
 };
 
 } // namespace SC
 
-#endif
+#endif 

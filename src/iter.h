@@ -157,6 +157,8 @@ public:
     Expr upperBound() const;
 };
 
+using IterPair = std::array<Iter, 2>;
+
 class IterCompare
 {
 public:
