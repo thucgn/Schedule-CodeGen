@@ -105,7 +105,7 @@ Stage& Stage::fuse(Iter x1, Iter x2, Iter& target)
     // the range of target starts from 0, and the real min is set by apply fuse result
     Range target_range = {0, x1->range.extent * x2->range.extent};
     Iter target_iter = IterNode::make(x1->iter_type, target_range, 
-            x1->var.derive(std::string(".fuse.") + x2->var->label),
+            x1->var.derive(std::string("_FUSE_") + x2->var->label),
             x1->iter_sche);
     target = target_iter;
 
@@ -136,10 +136,10 @@ Stage& Stage::split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor)
     Range outer_range{x->range.min, (x->range.extent+factor-1)/factor};
     Range inner_range{0, factor};
     Iter outer = IterNode::make( x->iter_type, outer_range, 
-            x->var.derive(".out"),
+            x->var.derive("_o"),
             x->iter_sche);
     Iter inner = IterNode::make( x->iter_type, inner_range,
-            x->var.derive(".in"),
+            x->var.derive("_i"),
             x->iter_sche);
     //set the reference
     outer_ref = outer;
