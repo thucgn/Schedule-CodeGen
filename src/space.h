@@ -15,6 +15,7 @@
 #include "node.h"
 #include "iter.h"
 #include "numberset.h"
+#include "util.h"
 
 namespace SC
 {
