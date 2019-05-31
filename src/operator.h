@@ -8,6 +8,9 @@
 #ifndef _OPERATOR_H
 #define _OPERATOR_H
 
+#include "schedule.h"
+#include "space.h"
+
 namespace SC
 {
 
@@ -21,8 +24,8 @@ class Operator
 {
 public:
     virtual void setParameter() = 0;
-    virtual void define() = 0;
-    virtual void schedule() = 0;
+    virtual void define(Schedule& s, Space& spa) = 0;
+    virtual void schedule(Schedule& s) = 0;
     virtual Operator* clone() = 0;
 };
 

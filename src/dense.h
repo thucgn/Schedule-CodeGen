@@ -19,6 +19,7 @@
 #include "type.h"
 #include "node.h"
 #include "lowered_func.h"
+#include "space.h"
 
 namespace SC
 {
@@ -29,30 +30,25 @@ class Dense : public Operator
 private:
     DT* a, b, c;
     int m, n, k;
+    Computation cp;
+    Iter im{"i", m}, jn{"j", n}, kk{"k", k, IterType::REDUCTION};
+    Tensor A{"A", {m, k}};
+    Tensor B{"B", {k, n}};
+    Tensor C{"C", {m, n}};
 public:
     void setParameter() override;
-    void define(Schedule& s) override 
+    void define(Schedule& sche, Space& spa) override 
     {
-        Tensor A{"A", {m, k}};
-        Tensor B{"B", {k, n}};
-        Tensor C{"C", {m, n}};
-
-        Schedule s = Schedule::empty_schedule();
-        Iter im{"i", m}, jn{"j", n}, kk{"k", k, IterType::REDUCTION};
-        Iter imo, imi, jno, jni, outer;
+        //Schedule s = Schedule::empty_schedule();
         Stmt reduce = reduce_add(C[im][jn], A[im][kk]*B[kk][jn]);
-        Computation cp = nest_loop_computation(s, "main", {im, jn, kk}, {reduce});
+        cp = nest_loop_computation(sche, "main", {im, jn, kk}, {reduce});
+        spa.define_split("mc", {2, 4, 8, 16, 32, 64});
+        spa.define_split("nc", {2, 4, 8, 16, 32, 64});
     }
     void schedule(Schedule& s) override
     {
+        Iter imo, imi;
         s[cp].split(im, imo, imi, 2);
-        s[cp].split(jn, jno, jni, 4);
-        s[cp].reorder({imo, jno, imi, jni, kk});
-        s[cp].fuse(imo, jno, outer);
-        s[cp].parallel(outer);
-
-        LoweredFunc lf = lower(s);
-        lf->body.accept(&cg);
     }
     Operator* clone() override;
 };

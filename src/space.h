@@ -11,11 +11,13 @@
 #include <string>
 #include <memory>
 #include <array>
+#include <map>
 #include "refcountptr.h"
 #include "node.h"
 #include "iter.h"
 #include "numberset.h"
 #include "util.h"
+#include "axis.h"
 
 namespace SC
 {
@@ -129,9 +131,13 @@ struct UnrollSpaceNode : SubSpaceNode<UnrollSpaceNode>
 
 struct SpaceNode : BaseSpaceNode
 {
+    /*
     std::vector<BaseSpace> splitspaces;    
     std::vector<BaseSpace> reorderspaces;
-    std::vector<BaseSpace> unrollspaces;
+    std::vector<BaseSpace> unrollspaces;*/
+    
+    std::map<std::string, BaseSpace> spaces;
+    
 };
 
 struct Space : public BaseSpace
@@ -143,11 +149,19 @@ struct Space : public BaseSpace
     SpaceNode* operator->() const  { return get(); }
     SpaceNode& operator*() const { return *get(); }
 
-    void define_split(Iter x, int min, int max);
+    /*void define_split(Iter x, int min, int max);
     void define_split(Iter x, const std::vector<int>& candidates);
     void define_reorder(const std::vector<std::vector<Iter>>& candidates);
     //void define_fuse();
-    void define_unroll(Iter x, const std::vector<int>& candidates);
+    void define_unroll(Iter x, const std::vector<int>& candidates);*/
+    /*void define_split(const std::string& tag, int min, int max); 
+    void define_split(const std::string& tag, const std::vector<int>& candidates);
+    void define_reorder(const std::string& tag, const std::vector<std::vector<Iter>>& candidates); 
+    void define_unroll(const std::string& tag, const std::vector<int>& candidates);*/
+    AxisPair define_split(const std::string& tag, Axis axis,  int min, int max); 
+    AxisPair define_split(const std::string& tag, Axis axis, const std::vector<int>& candidates);
+    void define_reorder(const std::string& tag, const std::vector< std::vector<Axis> >& candidates);
+    void define_unroll(const std::string& tag, Axis axis, const std::vector<int>& candidates);
 };
 
 } // namespace SC
