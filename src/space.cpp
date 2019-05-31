@@ -64,8 +64,30 @@ void Space::define_unroll(const std::string& tag, const std::vector<int>& candid
 
 AxisPair Space::define_split(const std::string& tag, Axis axis,  int min, int max)
 {
+    auto ret = get()->spaces.emplace(tag, SplitSpaceNode::make(axis, min, max));
+    CHECK_IF(ret.second, "space tag %s exists", tag.c_str());
+    auto ptr = ret.first->second.cast_to<SplitSpaceNode>();
+    return {ptr->outer, ptr->inner};
 }
-AxisPair Space::define_split(const std::string& tag, Axis axis, const std::vector<int>& candidates);
-void Space::define_reorder(const std::string& tag, const std::vector< std::vector<Axis> >& candidates);
-void Space::define_unroll(const std::string& tag, Axis axis, const std::vector<int>& candidates);
+
+AxisPair Space::define_split(const std::string& tag, Axis axis, const std::vector<int>& candidates)
+{
+    auto ret = get()->spaces.emplace(tag, SplitSpaceNode::make(axis, candidates));
+    CHECK_IF(ret.second, "space tag %s exists", tag.c_str());
+    auto ptr = ret.first->second.cast_to<SplitSpaceNode>();
+    return {ptr->outer, ptr->inner};
+}
+
+void Space::define_reorder(const std::string& tag, const std::vector< std::vector<Axis> >& candidates)
+{
+    auto ret = get()->spaces.emplace(tag, ReorderSpaceNode::make(candidates));
+    CHECK_IF(ret.second, "space tag %s exists", tag.c_str());
+}
+
+void Space::define_unroll(const std::string& tag, Axis axis, const std::vector<int>& candidates)
+{
+    auto ret = get()->spaces.emplace(tag, UnrollSpaceNode::make(axis, candidates));
+    CHECK_IF(ret.second, "space tag %s exists", tag.c_str());
+}
+
 } // namespace SC

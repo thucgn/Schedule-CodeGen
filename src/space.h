@@ -79,19 +79,24 @@ struct SubSpaceNode : BaseSpaceNode
 
 struct SplitSpaceNode : SubSpaceNode<SplitSpaceNode>
 {
-    Iter x;    
+    Axis x;    
+    Axis outer, inner;
     std::unique_ptr<NumberSet> candidates;
     static const SpaceType _node_type = SpaceType::SPLIT;
-    static BaseSpace make(Iter iter, int min, int max) {
+    static BaseSpace make(Axis iter, int min, int max) {
         SplitSpaceNode* n = new SplitSpaceNode();
         n->x = std::move(iter);
+        n->outer = new AxisNode;
+        n->inner = new AxisNode;
         n->candidates = SC::make_unique<ContinuousSet>(min, max);
         return n;
     }
-    static BaseSpace make(Iter iter, const std::vector<int>& candidates)
+    static BaseSpace make(Axis iter, const std::vector<int>& candidates)
     {
         SplitSpaceNode* n = new SplitSpaceNode();
         n->x = std::move(iter);
+        n->outer = new AxisNode;
+        n->inner = new AxisNode;
         n->candidates = SC::make_unique<DiscreteSet>(std::forward<const std::vector<int>&>(candidates));
         return n;
     }
@@ -99,9 +104,9 @@ struct SplitSpaceNode : SubSpaceNode<SplitSpaceNode>
 
 struct ReorderSpaceNode : SubSpaceNode<ReorderSpaceNode>
 {
-    std::vector< std::vector<Iter> > candidates;
+    std::vector< std::vector<Axis> > candidates;
     static const SpaceType _node_type = SpaceType::REORDER;
-    static BaseSpace make(const std::vector<std::vector<Iter>>& candidates)
+    static BaseSpace make(const std::vector<std::vector<Axis>>& candidates)
     {
         ReorderSpaceNode* n = new ReorderSpaceNode;
         n->candidates = candidates;
@@ -117,10 +122,10 @@ struct ReorderSpaceNode : SubSpaceNode<ReorderSpaceNode>
 
 struct UnrollSpaceNode : SubSpaceNode<UnrollSpaceNode>
 {
-    Iter x;
+    Axis x;
     std::unique_ptr<NumberSet> candidates;
     static const SpaceType _node_type = SpaceType::UNROLL;
-    static BaseSpace make(Iter iter, const std::vector<int>& candidates)
+    static BaseSpace make(Axis iter, const std::vector<int>& candidates)
     {
         UnrollSpaceNode* n = new UnrollSpaceNode;
         n->x = std::move(iter);

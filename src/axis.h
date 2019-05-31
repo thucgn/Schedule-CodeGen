@@ -39,8 +39,11 @@ struct VirtualAxis : public RefCountPtr<VirtualAxisNode>
     VirtualAxis(Iter x) :
         RefCountPtr<VirtualAxisNode>( VirtualAxisNode::make(x))
     {}
+    VirtualAxis(VirtualAxisNode* p):
+        RefCountPtr<VirtualAxisNode>(p)
+    {}
     VirtualAxis() : 
-        RefCountPtr<VirtualAxisNode>( VirtualAxisNode::make(Iter()))
+        RefCountPtr<VirtualAxisNode>()
     {}
 
 };
