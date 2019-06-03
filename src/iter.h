@@ -59,7 +59,11 @@ enum class IterSche : uint8_t
     /**
      * \bref indicates that it has been vectorized
      */
-    VECTORIZED
+    VECTORIZED,
+    /**
+     * \bref indicates that is has been unrolled
+     */
+    UNROLL
 };
 
 struct Range

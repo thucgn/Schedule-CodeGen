@@ -46,6 +46,8 @@ namespace
             break;
         case IterSche::PARALLELED:
             ret = ForType::PARALLEL;
+        case IterSche::UNROLL:
+            ret = ForType::UNROLL;
             break;
     }
     return ret;

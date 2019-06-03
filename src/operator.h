@@ -25,7 +25,7 @@ class Operator
 public:
     virtual void setParameter() = 0;
     virtual void define(Schedule& s, Space& spa) = 0;
-    virtual void schedule(Schedule& s) = 0;
+    virtual void schedule(Schedule& s, Space& spa) = 0;
     virtual Operator* clone() = 0;
 };
 

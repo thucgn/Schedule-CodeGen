@@ -10,6 +10,7 @@
 
 #include <map>
 #include <string>
+#include <tuple>
 #include "operator.h"
 #include "simple_codegen.h"
 #include "iroperator.h"
@@ -42,13 +43,19 @@ public:
         //Schedule s = Schedule::empty_schedule();
         Stmt reduce = reduce_add(C[im][jn], A[im][kk]*B[kk][jn]);
         cp = nest_loop_computation(sche, "main", {im, jn, kk}, {reduce});
-        spa.define_split("mc", {2, 4, 8, 16, 32, 64});
-        spa.define_split("nc", {2, 4, 8, 16, 32, 64});
+        Axis io, ii, jo, ji;
+        std::tie(io, ii) = spa.define_split("mc", im, {2, 4, 8, 16, 32, 64});
+        std::tie(jo, ji) = spa.define_split("nc", jn, {2, 4, 8, 16, 32, 64});
+        spa.define_reorder("reorderij", { {io, jo, ii, ji} });
     }
-    void schedule(Schedule& s) override
+    void schedule(Schedule& s, Space& spa) override
     {
-        Iter imo, imi;
-        s[cp].split(im, imo, imi, 2);
+        Axis io, ii, jo, ji;
+        Stage& stage = s[cp];
+        std::tie(io, ii) = spa.apply_split("mc", stage); 
+        std::tie(jo, ji) = spa.apply_split("nc", stage);
+        spa.apply_reorder("reorderij", stage);
+        stage.reorder({jo->x, io->x, ii->x, ji->x});
     }
     Operator* clone() override;
 };

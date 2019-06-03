@@ -266,6 +266,7 @@ void SimpleCodegenC::visit(const For* n)
         case ForType::VECTORIZED:
             break;
         case ForType::UNROLL:
+            os << indent << "//unroll\n";
             break;
     }
     os << indent << "for( ";

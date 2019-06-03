@@ -31,6 +31,7 @@ enum class SpaceType : uint8_t
 };
 
 struct BaseSpace;
+class Stage;
 
 struct BaseSpaceNode
 {
@@ -60,7 +61,7 @@ struct BaseSpace : public RefCountPtr<const BaseSpaceNode>
     bool is_type() const { return (ptr->space_type == T::_node_type); }
 
     template <typename T>
-    const T* cast_to() const 
+    T* cast_to() const 
     {
         if(ptr) 
             if(is_type<T>())
@@ -75,6 +76,7 @@ struct SubSpaceNode : BaseSpaceNode
 {
     SubSpaceNode() : BaseSpaceNode(T::_node_type) {}
     virtual ~SubSpaceNode() {}
+    virtual bool has_next() const = 0;
 };
 
 struct SplitSpaceNode : SubSpaceNode<SplitSpaceNode>
@@ -83,6 +85,8 @@ struct SplitSpaceNode : SubSpaceNode<SplitSpaceNode>
     Axis outer, inner;
     std::unique_ptr<NumberSet> candidates;
     static const SpaceType _node_type = SpaceType::SPLIT;
+
+    bool has_next() const override { return candidates->has_next(); }
     static BaseSpace make(Axis iter, int min, int max) {
         SplitSpaceNode* n = new SplitSpaceNode();
         n->x = std::move(iter);
@@ -100,18 +104,27 @@ struct SplitSpaceNode : SubSpaceNode<SplitSpaceNode>
         n->candidates = SC::make_unique<DiscreteSet>(std::forward<const std::vector<int>&>(candidates));
         return n;
     }
+
+    AxisPair apply_split(Stage& s);
+
 };
 
 struct ReorderSpaceNode : SubSpaceNode<ReorderSpaceNode>
 {
     std::vector< std::vector<Axis> > candidates;
+    std::unique_ptr<NumberSet> candidates_indices;
     static const SpaceType _node_type = SpaceType::REORDER;
+
+    bool has_next() const override { return candidates_indices->has_next(); }
     static BaseSpace make(const std::vector<std::vector<Axis>>& candidates)
     {
         ReorderSpaceNode* n = new ReorderSpaceNode;
         n->candidates = candidates;
+        n->candidates_indices = SC::make_unique<ContinuousSet>(0, candidates.size());
         return n;
     }
+
+    void apply_reorder(Stage& s);
 };
 
 /*struct FuseSpace : SubSpaceNode<FuseSpace>
@@ -125,6 +138,9 @@ struct UnrollSpaceNode : SubSpaceNode<UnrollSpaceNode>
     Axis x;
     std::unique_ptr<NumberSet> candidates;
     static const SpaceType _node_type = SpaceType::UNROLL;
+
+    bool has_next() const override { return candidates->has_next(); }
+
     static BaseSpace make(Axis iter, const std::vector<int>& candidates)
     {
         UnrollSpaceNode* n = new UnrollSpaceNode;
@@ -132,6 +148,8 @@ struct UnrollSpaceNode : SubSpaceNode<UnrollSpaceNode>
         n->candidates = SC::make_unique<DiscreteSet>(std::forward<const std::vector<int>&>(candidates));
         return n;
     }
+
+    void apply_unroll(Stage& s);
 };
 
 struct SpaceNode : BaseSpaceNode
@@ -167,6 +185,10 @@ struct Space : public BaseSpace
     AxisPair define_split(const std::string& tag, Axis axis, const std::vector<int>& candidates);
     void define_reorder(const std::string& tag, const std::vector< std::vector<Axis> >& candidates);
     void define_unroll(const std::string& tag, Axis axis, const std::vector<int>& candidates);
+
+    AxisPair apply_split(const std::string& tag, Stage& s);
+    void apply_reorder(const std::string& tag, Stage& s);
+    void apply_unroll(const std::string& tag, Stage& s);
 };
 
 } // namespace SC
