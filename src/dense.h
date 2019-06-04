@@ -1,4 +1,4 @@
-*************************************************************************
+/*************************************************************************
 	> File Name: dense.h
 	> Author: 
 	> Mail: 
@@ -37,7 +37,11 @@ private:
     Tensor B{"B", {k, n}};
     Tensor C{"C", {m, n}};
 public:
-    void setParameter() override;
+    void setParameter(std::map<std::string, std::string>& param) override {
+        m = std::stoi(param["m"]);
+        n = std::stoi(param["n"]);
+        k = std::stoi(param["k"]);
+    }
     void define(Schedule& sche, Space& spa) override 
     {
         //Schedule s = Schedule::empty_schedule();
@@ -46,7 +50,7 @@ public:
         Axis io, ii, jo, ji;
         std::tie(io, ii) = spa.define_split("mc", im, {2, 4, 8, 16, 32, 64});
         std::tie(jo, ji) = spa.define_split("nc", jn, {2, 4, 8, 16, 32, 64});
-        spa.define_reorder("reorderij", { {io, jo, ii, ji} });
+        spa.define_reorder("reorderij", { {io, jo, ii, ji, kk} });
     }
     void schedule(Schedule& s, Space& spa) override
     {
@@ -55,9 +59,11 @@ public:
         std::tie(io, ii) = spa.apply_split("mc", stage); 
         std::tie(jo, ji) = spa.apply_split("nc", stage);
         spa.apply_reorder("reorderij", stage);
-        stage.reorder({jo->x, io->x, ii->x, ji->x});
+        stage.reorder({jo->x, io->x, ii->x, ji->x, kk});
     }
-    Operator* clone() override;
+    Operator* clone() override {
+        CHECK_IF(false, "clone has not been implemented");
+    }
 };
 
 } // namespace SC

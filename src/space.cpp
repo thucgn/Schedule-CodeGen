@@ -66,6 +66,7 @@ void Space::define_unroll(const std::string& tag, const std::vector<int>& candid
 
 AxisPair Space::define_split(const std::string& tag, Axis axis,  int min, int max)
 {
+    LOG("split");
     auto ret = get()->spaces.emplace(tag, SplitSpaceNode::make(axis, min, max));
     CHECK_IF(ret.second, "space tag %s exists", tag.c_str());
     auto ptr = ret.first->second.cast_to<SplitSpaceNode>();

@@ -179,6 +179,33 @@ applysplitresult_pass.cpp.s:
 	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/applysplitresult_pass.cpp.s
 .PHONY : applysplitresult_pass.cpp.s
 
+axis.o: axis.cpp.o
+
+.PHONY : axis.o
+
+# target to build an object file
+axis.cpp.o:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/axis.cpp.o
+.PHONY : axis.cpp.o
+
+axis.i: axis.cpp.i
+
+.PHONY : axis.i
+
+# target to preprocess a source file
+axis.cpp.i:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/axis.cpp.i
+.PHONY : axis.cpp.i
+
+axis.s: axis.cpp.s
+
+.PHONY : axis.s
+
+# target to generate assembly for a file
+axis.cpp.s:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/axis.cpp.s
+.PHONY : axis.cpp.s
+
 computation.o: computation.cpp.o
 
 .PHONY : computation.o
@@ -449,6 +476,33 @@ simple_codegen.cpp.s:
 	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/simple_codegen.cpp.s
 .PHONY : simple_codegen.cpp.s
 
+space.o: space.cpp.o
+
+.PHONY : space.o
+
+# target to build an object file
+space.cpp.o:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/space.cpp.o
+.PHONY : space.cpp.o
+
+space.i: space.cpp.i
+
+.PHONY : space.i
+
+# target to preprocess a source file
+space.cpp.i:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/space.cpp.i
+.PHONY : space.cpp.i
+
+space.s: space.cpp.s
+
+.PHONY : space.s
+
+# target to generate assembly for a file
+space.cpp.s:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/space.cpp.s
+.PHONY : space.cpp.s
+
 tensor.o: tensor.cpp.o
 
 .PHONY : tensor.o
@@ -518,6 +572,9 @@ help:
 	@echo "... applysplitresult_pass.o"
 	@echo "... applysplitresult_pass.i"
 	@echo "... applysplitresult_pass.s"
+	@echo "... axis.o"
+	@echo "... axis.i"
+	@echo "... axis.s"
 	@echo "... computation.o"
 	@echo "... computation.i"
 	@echo "... computation.s"
@@ -548,6 +605,9 @@ help:
 	@echo "... simple_codegen.o"
 	@echo "... simple_codegen.i"
 	@echo "... simple_codegen.s"
+	@echo "... space.o"
+	@echo "... space.i"
+	@echo "... space.s"
 	@echo "... tensor.o"
 	@echo "... tensor.i"
 	@echo "... tensor.s"

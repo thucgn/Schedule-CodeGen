@@ -20,7 +20,7 @@ class NumberSet
 {
 public:
     virtual int next() const = 0;
-    virtual bool has_next() const;
+    virtual bool has_next() const = 0;
     virtual int size() const = 0;
     virtual int remaining() const = 0;
     virtual void reset() const = 0;

@@ -27,7 +27,8 @@ enum class SpaceType : uint8_t
     SPLIT,
     REORDER,
     //FUSE,
-    UNROLL
+    UNROLL,
+    SPACE,
 };
 
 struct BaseSpace;
@@ -65,7 +66,7 @@ struct BaseSpace : public RefCountPtr<const BaseSpaceNode>
     {
         if(ptr) 
             if(is_type<T>())
-                return (const T*)ptr;
+                return (T*)ptr;
     }
     
     SpaceType space_type() const { return ptr->space_type; }
@@ -152,6 +153,8 @@ struct UnrollSpaceNode : SubSpaceNode<UnrollSpaceNode>
     void apply_unroll(Stage& s);
 };
 
+struct Space;
+
 struct SpaceNode : BaseSpaceNode
 {
     /*
@@ -160,7 +163,9 @@ struct SpaceNode : BaseSpaceNode
     std::vector<BaseSpace> unrollspaces;*/
     
     std::map<std::string, BaseSpace> spaces;
-    
+    static const SpaceType _node_type = SpaceType::SPACE;
+
+    SpaceNode():BaseSpaceNode(SpaceType::SPACE){}
 };
 
 struct Space : public BaseSpace

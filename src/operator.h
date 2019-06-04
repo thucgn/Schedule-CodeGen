@@ -8,6 +8,8 @@
 #ifndef _OPERATOR_H
 #define _OPERATOR_H
 
+#include <map>
+#include <string>
 #include "schedule.h"
 #include "space.h"
 
@@ -23,7 +25,7 @@ public:
 class Operator
 {
 public:
-    virtual void setParameter() = 0;
+    virtual void setParameter(std::map<std::string, std::string>&) = 0;
     virtual void define(Schedule& s, Space& spa) = 0;
     virtual void schedule(Schedule& s, Space& spa) = 0;
     virtual Operator* clone() = 0;
