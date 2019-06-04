@@ -16,10 +16,18 @@
 #include "hash.h"
 #include "ir.h"
 
+enum class AttachType : uint8_t
+{
+    ROOT,
+    INLINE,
+    SCOPE,
+};
+
 namespace SC
 {
 
 class Stage;
+class StageNode;
 class Schedule;
 
 struct SplitResult
@@ -44,6 +52,28 @@ struct FuseResult
     {}
 };
 
+class Stage : public RefCountPtr<StageNode>
+{
+public:
+    Stage() : RefCountPtr<StageNode>() {}
+    explicit Stage(StageNode* p) : RefCountPtr<StageNode>(p) {}
+
+    /**
+     * \bref split x to outer*factor + inner
+     * outer and inner will be setted in the function
+     * a SplitResult will be added to split_results
+     */
+    Stage& split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor);
+    Stage& fuse(Iter x1, Iter x2, Iter& target);
+    Stage& reorder(const std::vector<Iter>& ordered_iters);
+    Stage& parallel(const Iter iter);
+    Stage& vectorization(const Iter iter);
+    Stage& unroll(const Iter iter);
+    Stage& compute_inline();
+    Stage& compute_root();
+    Stage& compute_at(Stage s, Iter scope);
+
+};
 
 /**
  * \bref a stage is corresponding to a computation
@@ -84,6 +114,19 @@ public:
      */
     std::vector<FuseResult> fuse_results;
 
+    /**
+     * \bref attach type
+     */
+    AttachType attach_type {AttachType::ROOT};
+    /**
+     * \bref attach stage
+     */
+    Stage attach_stage;
+    /**
+     * \bref attach iter of attach stage
+     */
+    Iter attach_iter;
+
     static Stage make(Computation cp);
 
 
@@ -110,24 +153,6 @@ inline void destroy<StageNode>(const StageNode* p)
 }
 
 
-class Stage : public RefCountPtr<StageNode>
-{
-public:
-    Stage() : RefCountPtr<StageNode>() {}
-    explicit Stage(StageNode* p) : RefCountPtr<StageNode>(p) {}
-
-    /**
-     * \bref split x to outer*factor + inner
-     * outer and inner will be setted in the function
-     * a SplitResult will be added to split_results
-     */
-    Stage& split(Iter x, Iter& outer_ref, Iter& inner_ref, Expr factor);
-    Stage& fuse(Iter x1, Iter x2, Iter& target);
-    Stage& reorder(const std::vector<Iter>& ordered_iters);
-    Stage& parallel(const Iter iter);
-    Stage& vectorization(const Iter iter);
-
-};
 
 class ScheduleNode final
 {

@@ -236,6 +236,38 @@ Stage& Stage::vectorization(const Iter iter)
     return *this;
 }
 
+Stage& Stage::unroll(const Iter iter)
+{
+    CHECK_IF(false, "unroll has not been implemented");
+}
+
+Stage& Stage::compute_inline()
+{
+    get()->attach_type = AttachType::INLINE;
+    return *this;
+}
+
+Stage& Stage::compute_root()
+{
+    get()->attach_type = AttachType::ROOT;
+    return *this;
+}
+
+Stage& Stage::compute_at(Stage s, Iter scope)
+{
+    bool found = false;
+    for(auto& iter : s->root_iters)
+        if(iter.sameAs(scope))
+            found = true;
+    CHECK_IF(found, "no this axis in stage");
+
+    get()->attach_type = AttachType::SCOPE;
+    get()->attach_iter = std::move(scope);
+    get()->attach_stage = std::move(s);
+
+    return *this;
+}
+
 Schedule ScheduleNode::make(std::vector<Computation> cps)
 {
     CHECK_IF(cps.size() > 0, "computation vector is empty");
