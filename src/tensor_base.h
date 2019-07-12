@@ -20,8 +20,10 @@ class TensorBaseNode
 {
 public:
     std::string name;
+    std::vector<Expr> shape;
 
     mutable RefCount ref_count;
+
     virtual ~TensorBaseNode() {}
 };
 
@@ -49,6 +51,9 @@ public:
         RefCountPtr<const TensorBaseNode>(p)
     {}
 
+    virtual const std::vector<Expr>& shape() const {
+        return get()->shape;
+    }
     const std::string& name() const { return ptr->name; }
 
     template <typename T>

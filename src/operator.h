@@ -16,6 +16,9 @@
 namespace SC
 {
 
+using Param = std::map<std::string,
+      std::string>;
+
 class Parameter
 {
 public:
@@ -25,7 +28,7 @@ public:
 class Operator
 {
 public:
-    virtual void setParameter(std::map<std::string, std::string>&) = 0;
+    virtual void setParameter(Param&) = 0;
     virtual void define(Schedule& s, Space& spa) = 0;
     virtual void schedule(Schedule& s, Space& spa) = 0;
     virtual Operator* clone() = 0;

@@ -108,9 +108,11 @@ Expr Call::make(RetType rt,
         std::vector<Expr>&& args,
         TensorBase tb)
 {
-    CHECK_IF(rt.defined(), "invalied rettype");
+    /*CHECK_IF(rt.defined(), "invalied rettype");
     CHECK_IF(name.length() > 0, "call must have a name");
-    CHECK_IF(tb.notNull(), "call to a null func");
+    CHECK_IF(tb.notNull(), "call to a null func");*/
+    for(auto& arg : args)
+        CHECK_IF(arg.notNull(), "some args of call %s are not defined", name.c_str());
 
     Call* n = new Call();
     n->data_type = rt;
@@ -192,6 +194,50 @@ Stmt For::make(ForType type, VarExpr var,
     n->min = std::move(min);
     n->extent = std::move(extent);
     n->body = std::move(body);
+    return n;
+}
+
+Stmt DMALoad::make(const std::string& tag,
+        TensorBase src, TensorBase dst,
+        std::vector<Expr> src_start,
+        std::vector<Expr> src_end,
+        std::vector<Expr> dst_start,
+        std::vector<Expr> dst_end)
+{
+    CHECK_IF(src.notNull() && dst.notNull(), "source and destination tensor cannot be null");
+    CHECK_IF(src_start.size() == src_end.size(), "dimension of start/end point of source do not match");
+    CHECK_IF(dst_start.size() == dst_end.size(), "dimension of start/end point of destination do not match");
+
+    DMALoad* n = new DMALoad();
+    n->tag = tag;
+    n->src = std::move(src);
+    n->dst = std::move(dst);
+    n->src_start = std::move(src_start);
+    n->src_end = std::move(src_end);
+    n->dst_start = std::move(dst_start);
+    n->dst_end = std::move(dst_end);
+    return n;
+}
+
+Stmt DMAStore::make(const std::string& tag,
+        TensorBase src, TensorBase dst,
+        std::vector<Expr> src_start,
+        std::vector<Expr> src_end,
+        std::vector<Expr> dst_start,
+        std::vector<Expr> dst_end)
+{
+    CHECK_IF(src.notNull() && dst.notNull(), "source and destination tensor cannot be null");
+    CHECK_IF(src_start.size() == src_end.size(), "dimension of start/end point of source do not match");
+    CHECK_IF(dst_start.size() == dst_end.size(), "dimension of start/end point of destination do not match");
+
+    DMALoad* n = new DMALoad();
+    n->tag = tag;
+    n->src = std::move(src);
+    n->dst = std::move(dst);
+    n->src_start = std::move(src_start);
+    n->src_end = std::move(src_end);
+    n->dst_start = std::move(dst_start);
+    n->dst_end = std::move(dst_end);
     return n;
 }
 

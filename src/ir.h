@@ -14,6 +14,7 @@
 #include "tensor_base.h"
 //#include "reduction.h"
 #include "iter.h"
+#include "tensor_base.h"
 
 namespace SC
 {
@@ -251,6 +252,12 @@ public:
 
     static const NodeType _node_type = NodeType::CALL;
 
+    /**
+     * \param rt return type, set to empty for 'void'
+     * \param ct call type
+     * \param args
+     * \param func, if call to internal func, set it to target Funtion, other set it to be empty
+     */
     static Expr make(RetType rt,
             CallType ct, 
             const std::string& name,
@@ -328,6 +335,44 @@ public:
 
 };
 
+class DMALoad : public StmtNode<DMALoad>
+{
+public:
+    std::string tag;
+    TensorBase src;
+    TensorBase dst;
+    std::vector<Expr> src_start;
+    std::vector<Expr> src_end;
+    std::vector<Expr> dst_start;
+    std::vector<Expr> dst_end;
+    static const NodeType _node_type = NodeType::DMA_LOAD;
+    static Stmt make(const std::string& tag,
+            TensorBase src, TensorBase dst,
+            std::vector<Expr> src_start,
+            std::vector<Expr> src_end,
+            std::vector<Expr> dst_start,
+            std::vector<Expr> dst_end);
+};
+
+class DMAStore : public StmtNode<DMAStore>
+{
+public:
+    std::string tag;
+    TensorBase src;
+    TensorBase dst;
+    // start, end means the point of source 
+    std::vector<Expr> src_start;
+    std::vector<Expr> src_end;
+    std::vector<Expr> dst_start;
+    std::vector<Expr> dst_end;
+    static const NodeType _node_type = NodeType::DMA_STORE;
+    static Stmt make(const std::string& tag,
+            TensorBase src, TensorBase dst,
+            std::vector<Expr> src_start,
+            std::vector<Expr> src_end,
+            std::vector<Expr> dst_start,
+            std::vector<Expr> dst_end);
+};
 /**
  * \bref Store
  */

@@ -55,6 +55,8 @@ enum class NodeType : uint8_t
     FOR,
     BLOCK,
     IF_THEN_ELSE,
+    DMA_LOAD, // dma load
+    DMA_STORE, // dma store
     STORE,
     REDUCE,
     EVALUEATE,

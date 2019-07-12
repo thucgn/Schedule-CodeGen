@@ -37,7 +37,8 @@ private:
     Tensor B{"B", {k, n}};
     Tensor C{"C", {m, n}};
 public:
-    void setParameter(std::map<std::string, std::string>& param) override {
+    void setParameter(Param& param) override
+    {
         m = std::stoi(param["m"]);
         n = std::stoi(param["n"]);
         k = std::stoi(param["k"]);

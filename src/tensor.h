@@ -17,13 +17,17 @@
 namespace SC
 {
 
+enum class TensorLoc : uint8_t { 
+    MEM,
+    LDM,
+};
+
 class Tensor;
 
 
 class TensorNode final : public TensorBaseNode
 {
 public:
-    std::vector<Expr> shape;
     DataType  data_type;
     /**
      * \bref the computation whose output is the tensor
@@ -34,12 +38,15 @@ public:
      */
     int source_output_index{0};
 
+    TensorLoc location{TensorLoc::MEM};
+
     static Tensor make(
             const std::string& name,
             DataType type, 
             std::vector<Expr> shape,
             Computation source_computation,
-            int source_output_index);
+            int source_output_index,
+            TensorLoc loc);
 
 };
 
@@ -56,13 +63,14 @@ public:
      */
     Tensor(const std::string& name,
             std::vector<Expr> shape,
-            DataType type = Float(32));
+            DataType type = Float(32), 
+            TensorLoc loc=TensorLoc::MEM);
 
     const TensorNode* get() const { return (const TensorNode*)ptr; }
     const TensorNode* operator->() const { return get(); }
     const TensorNode& operator*() const { return *get(); }
 
-    const std::vector<Expr>& shape() const { return get()->shape; }
+    const std::vector<Expr>& shape() const override { return get()->shape; }
     size_t ndim() const { return get()->shape.size(); }
 
     template <typename... Args>

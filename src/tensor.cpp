@@ -14,7 +14,7 @@ namespace SC
 
 Tensor TensorNode::make(const std::string& name,
         DataType type, std::vector<Expr> shape, 
-        Computation source_computation, int source_output_index)
+        Computation source_computation, int source_output_index, TensorLoc loc)
 {
     CHECK_IF(shape.size() > 0, "the shape of tensor cannot be empty");
     TensorNode* n = new TensorNode();
@@ -23,14 +23,16 @@ Tensor TensorNode::make(const std::string& name,
     n->shape = std::move(shape);
     n->source_cp = std::move(source_computation);
     n->source_output_index = source_output_index;
+    n->location = loc;
     return Tensor(n);
 }
 
 Tensor::Tensor(const std::string& name, 
         std::vector<Expr> shape,
-        DataType type)
+        DataType type,
+        TensorLoc loc)
     :Tensor(TensorNode::make(name,
-                type, shape, Computation(), 0))
+                type, shape, Computation(), 0, loc))
 {}
 
 Expr Tensor::operator()(std::vector<Expr> indices) const
