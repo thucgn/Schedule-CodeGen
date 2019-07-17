@@ -1,5 +1,4 @@
-/*************************************************************************
-	> File Name: IR.h
+/************************************************************************* > File Name: IR.h
 	> Author: 
 	> Mail: 
 	> Created Time: Tue 05 Mar 2019 02:31:54 AM UTC
@@ -27,6 +26,11 @@ enum class CallType : uint8_t
     EXTERNAL, // external function
     INTERNAL, // Function
     TENSOR_ACCESS, // access a tensor
+};
+
+enum class HostLoc : uint8_t {
+    MEM,
+    LDM,
 };
 
 /**
@@ -415,6 +419,34 @@ public:
     Expr value;
     static const NodeType _node_type = NodeType::EVALUEATE;
     static Stmt make(Expr v);
+};
+
+class Allocate : public StmtNode<Allocate>
+{
+public:
+    VarExpr buffer_var;
+    DataType type;
+    std::vector<Expr> shape;
+    HostLoc loc;
+    static const NodeType _node_type = NodeType::ALLOCATE;
+    static Stmt make(VarExpr buffer_var,
+            DataType type,
+            std::vector<Expr> shape, HostLoc loc=HostLoc::MEM);
+};
+
+class Free : public StmtNode<Free>
+{
+public:
+    VarExpr buffer_var;
+    //record the type and shape, because some free function requires the number of bytes
+    DataType type;
+    std::vector<Expr> shape;
+    HostLoc loc;
+    static const NodeType _node_type = NodeType::FREE;
+    static Stmt make(VarExpr buffer_var,
+            DataType type,
+            std::vector<Expr> shape, HostLoc loc=HostLoc::MEM);
+
 };
 
 } // SC

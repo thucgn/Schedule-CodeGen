@@ -176,5 +176,135 @@ Stmt IRMutator::mutateNode(const Evaluate* n)
         return Evaluate::make(new_value);
 }
 
+Stmt IRMutator::mutateNode(const DMALoad* n)
+{
+    std::vector<Expr> new_src_start, new_src_end,
+        new_dst_start, new_dst_end;
+    bool changed = false;
+    for(auto& e : n->src_start)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        new_src_start.emplace_back(std::move(new_e));
+    }
+    for(auto& e : n->src_end)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        new_src_end.emplace_back(std::move(new_e));
+    }
+    for(auto& e : n->dst_start)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        new_dst_start.emplace_back(std::move(new_e));
+    }
+    for(auto& e : n->dst_end)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        new_dst_end.emplace_back(std::move(new_e));
+    }
+
+    if(!changed)
+        return n;
+    else
+        return DMALoad::make(n->tag,
+                n->src, n->dst,
+                new_src_start,
+                new_src_end,
+                new_dst_start,
+                new_dst_end);
+
+}
+Stmt IRMutator::mutateNode(const DMAStore* n)
+{
+    std::vector<Expr> new_src_start, new_src_end,
+        new_dst_start, new_dst_end;
+    bool changed = false;
+    for(auto& e : n->src_start)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        new_src_start.emplace_back(std::move(new_e));
+    }
+    for(auto& e : n->src_end)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        new_src_end.emplace_back(std::move(new_e));
+    }
+    for(auto& e : n->dst_start)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        new_dst_start.emplace_back(std::move(new_e));
+    }
+    for(auto& e : n->dst_end)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        new_dst_end.emplace_back(std::move(new_e));
+    }
+
+    if(!changed)
+        return n;
+    else
+        return DMAStore::make(n->tag,
+                n->src, n->dst,
+                new_src_start,
+                new_src_end,
+                new_dst_start,
+                new_dst_end);
+
+}
+
+Stmt IRMutator::mutateNode(const Allocate* n)
+{
+    std::vector<Expr> shape;
+    bool changed = false;
+    for(auto& e : n->shape)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        shape.emplace_back(std::move(new_e));
+    }
+    if(!changed)
+        return n;
+    else
+        return Allocate::make(n->buffer_var, 
+                n->type,
+                n->shape,
+                n->loc);
+}
+
+Stmt IRMutator::mutateNode(const Free* n)
+{
+    std::vector<Expr> shape;
+    bool changed = false;
+    for(auto& e : n->shape)
+    {
+        Expr new_e = mutate(e);
+        if(!new_e.sameAs(e))
+            changed = true;
+        shape.emplace_back(std::move(new_e));
+    }
+    if(!changed)
+        return n;
+    else
+        return Free::make(n->buffer_var, 
+                n->type,
+                n->shape,
+                n->loc);
+}
 } // namespace SC
 

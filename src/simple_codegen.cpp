@@ -323,5 +323,28 @@ void SimpleCodegenC::visit(const Evaluate* n)
     os << "; \n";
 }
 
+void SimpleCodegenC::visit(const DMALoad* n)
+{
+    os << indent << "DMA load " << n->dst->name 
+        << " = " << n->src->name << " ...; \n";
+}
+void SimpleCodegenC::visit(const DMAStore* n)
+{
+    os << indent << "DMA Store " << n->dst->name 
+        << " = " << n->src->name << " ...; \n";
+}
+void SimpleCodegenC::visit(const Allocate* n)
+{
+    os << indent << "allocate ";
+    n->buffer_var.accept(this);
+    os << " ...;\n";
+}
+void SimpleCodegenC::visit(const Free* n)
+{
+    os << indent << "free ";
+    n->buffer_var.accept(this);
+    os << " ...;\n";
+}
+
 
 } //namespace SC

@@ -60,6 +60,8 @@ enum class NodeType : uint8_t
     STORE,
     REDUCE,
     EVALUEATE,
+    ALLOCATE,
+    FREE
 };
 
 

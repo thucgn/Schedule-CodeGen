@@ -17,10 +17,12 @@
 namespace SC
 {
 
-enum class TensorLoc : uint8_t { 
+/*enum class TensorLoc : uint8_t { 
     MEM,
     LDM,
-};
+};*/
+
+using TensorLoc = HostLoc;
 
 class Tensor;
 

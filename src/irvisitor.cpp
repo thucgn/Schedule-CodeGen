@@ -142,5 +142,38 @@ void IRVisitor::visit(const Evaluate* n)
     n->value.accept(this);
 }
 
+void IRVisitor::visit(const DMALoad* n)
+{
+    for(auto& e : n->src_start)    
+        e.accept(this);
+    for(auto& e : n->src_end)    
+        e.accept(this);
+    for(auto& e : n->dst_start)    
+        e.accept(this);
+    for(auto& e : n->dst_end)    
+        e.accept(this);
+}
+void IRVisitor::visit(const DMAStore* n)
+{
+    for(auto& e : n->src_start)    
+        e.accept(this);
+    for(auto& e : n->src_end)    
+        e.accept(this);
+    for(auto& e : n->dst_start)    
+        e.accept(this);
+    for(auto& e : n->dst_end)    
+        e.accept(this);
+}
+void IRVisitor::visit(const Allocate* n)
+{
+    for(auto& e : n->shape)
+        e.accept(this);
+}
+void IRVisitor::visit(const Free* n)
+{
+    for(auto& e : n->shape)
+        e.accept(this);
+}
+
 } // namespace SC
 

@@ -88,6 +88,10 @@ private:
             DEFINE_VISIT(IF_THEN_ELSE, IfThenElse);
             DEFINE_VISIT(STORE, Store);
             DEFINE_VISIT(REDUCE, Reduce);
+            DEFINE_VISIT(DMA_LOAD, DMALoad);
+            DEFINE_VISIT(DMA_STORE, DMAStore);
+            DEFINE_VISIT(ALLOCATE, Allocate);
+            DEFINE_VISIT(FREE, Free);
             default:
                 CHECK_IF(0, "unsupported stmt class");
         }

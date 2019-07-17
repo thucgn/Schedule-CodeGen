@@ -280,4 +280,32 @@ Stmt Evaluate::make(Expr v)
     return n;
 }
 
+Stmt Allocate::make(VarExpr buffer_var, DataType type, std::vector<Expr> shape, HostLoc loc)
+{
+    CHECK_IF(buffer_var.notNull(), "allocate var is null");
+    CHECK_IF(type.defined(), "allocate type is undifined");
+    CHECK_IF(shape.size() > 0, "cannot allocate empty");
+
+    Allocate* n = new Allocate();
+    n->buffer_var = std::move(buffer_var);
+    n->type = type;
+    n->shape = std::move(shape);
+    n->loc = loc;
+    return n;
+}
+
+Stmt Free::make(VarExpr buffer_var, DataType type, std::vector<Expr> shape, HostLoc loc)
+{
+    CHECK_IF(buffer_var.notNull(), "free var is null");
+    CHECK_IF(type.defined(), "free type is undifined");
+    CHECK_IF(shape.size() > 0, "free allocate empty");
+
+    Free* n = new Free();
+    n->buffer_var = std::move(buffer_var);
+    n->type = type;
+    n->shape = std::move(shape);
+    n->loc = loc;
+    return n;
+}
+
 } // namespace SC

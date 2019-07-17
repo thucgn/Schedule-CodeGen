@@ -70,6 +70,10 @@ protected:
     void visit(const Store* n) override;
     void visit(const Reduce* n) override;
     void visit(const Evaluate* n) override;
+    void visit(const DMALoad* n) override;
+    void visit(const DMAStore* n) override;
+    void visit(const Allocate* n) override;
+    void visit(const Free* n) override;
 
     
     template <typename T>

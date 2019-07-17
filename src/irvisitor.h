@@ -53,6 +53,10 @@ protected:
     virtual void visit(const Store* n);
     virtual void visit(const Reduce* n);
     virtual void visit(const Evaluate* n);
+    virtual void visit(const DMALoad* n);
+    virtual void visit(const DMAStore* n);
+    virtual void visit(const Allocate* n);
+    virtual void visit(const Free* n);
 
     template <typename T>
     friend class ExprNode;
