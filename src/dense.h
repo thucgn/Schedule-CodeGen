@@ -32,7 +32,8 @@ private:
     DT* a, b, c;
     int m, n, k;
     Computation cp;
-    Iter im{"i", m}, jn{"j", n}, kk{"k", k, IterType::REDUCTION};
+    //Iter im{"i", m}, jn{"j", n}, kk{"k", k, IterType::REDUCTION};
+    Iter im, jn, kk;
     Tensor A{"A", {m, k}};
     Tensor B{"B", {k, n}};
     Tensor C{"C", {m, n}};
@@ -42,6 +43,10 @@ public:
         m = std::stoi(param["m"]);
         n = std::stoi(param["n"]);
         k = std::stoi(param["k"]);
+        im = Iter("i", m);
+        jn = Iter("j", n);
+        kk = Iter("k", k, IterType::REDUCTION);
+        LOG("dense parameter m %d n %d k %d", m, n, k);
     }
     void define(Schedule& sche, Space& spa) override 
     {

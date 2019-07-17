@@ -6,6 +6,7 @@
  ************************************************************************/
 
 #include "simple_codegen.h"
+#include "constantfold_pass.h"
 #include "util.h"
 
 namespace 
@@ -276,7 +277,13 @@ void SimpleCodegenC::visit(const For* n)
     os << ';';
     n->var.accept(this);
     os << '<';
-    Add::make(n->min, n->extent).accept(this);
+    
+    Expr e = Add::make(n->min, n->extent);
+    // constant fold
+    ConstantFoldPass cf;
+    Expr new_e = e->mutate_expr(&cf);
+    new_e.accept(this);
+    //Add::make(n->min, n->extent).accept(this);
     os << ';';
     n->var.accept(this);
     os << "++ )\n";

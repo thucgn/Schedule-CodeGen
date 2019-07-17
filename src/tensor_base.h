@@ -12,6 +12,7 @@
 #include <vector>
 #include "refcountptr.h"
 #include "node.h"
+#include "function.h"
 
 namespace SC
 {

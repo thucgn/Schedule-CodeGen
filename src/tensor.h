@@ -9,6 +9,7 @@
 #define _TENSOR_H
 
 #include <vector>
+#include <list>
 #include "type.h"
 #include "iter.h"
 #include "computation.h"
@@ -33,8 +34,11 @@ public:
     DataType  data_type;
     /**
      * \bref the computation whose output is the tensor
+     * some tensor can be attached to multiple computations, e.g., 
+     * a tensor is modified by a computation
      */
-    Computation source_cp;
+    std::list<Computation> source_cps;
+    //Computation source_cp;
     /**
      * \bref the index of output of source_cp
      */
@@ -66,6 +70,13 @@ public:
     Tensor(const std::string& name,
             std::vector<Expr> shape,
             DataType type = Float(32), 
+            TensorLoc loc=TensorLoc::MEM);
+
+    Tensor(const std::string& name,
+            std::vector<Expr> shape,
+            Computation source_cp,
+            int source_output_index=0,
+            DataType type=Float(32),
             TensorLoc loc=TensorLoc::MEM);
 
     const TensorNode* get() const { return (const TensorNode*)ptr; }

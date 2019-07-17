@@ -10,7 +10,6 @@
 #include "node.h"
 #include <vector>
 #include "function.h"
-#include "tensor_base.h"
 //#include "reduction.h"
 #include "iter.h"
 #include "tensor_base.h"
