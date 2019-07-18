@@ -274,6 +274,16 @@ public:
 
 };
 
+/**
+ * \bref condition ? a : b;
+ */
+class Select : public ExprNode<Select>
+{
+public:
+    Expr cond, true_case, false_case;
+    static const NodeType _node_type = NodeType::SELECT;
+    static Expr make(Expr cond, Expr true_case, Expr false_case);
+};
 
 /**
  * \bref Within the statement 'body', instances of var refer to value
@@ -288,16 +298,6 @@ public:
     static Stmt make(VarExpr var, Expr value, Stmt body);
 };
 
-/**
- * \bref condition ? a : b;
- */
-class Select : public StmtNode<Select>
-{
-public:
-    Expr cond, true_case, false_case;
-    static const NodeType _node_type = NodeType::SELECT;
-    static Stmt make(Expr cond, Expr true_case, Expr false_case);
-};
 
 /**
  * \bref if cond then a else b

@@ -8,6 +8,7 @@
 #include "tensor.h"
 #include "util.h"
 #include "ir.h"
+#include "computation.h"
 
 namespace SC
 {

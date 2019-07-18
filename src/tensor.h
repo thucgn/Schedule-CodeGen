@@ -9,10 +9,9 @@
 #define _TENSOR_H
 
 #include <vector>
-#include <list>
 #include "type.h"
 #include "iter.h"
-#include "computation.h"
+#include "ir.h"
 #include "tensor_base.h"
 
 namespace SC
@@ -22,6 +21,8 @@ namespace SC
     MEM,
     LDM,
 };*/
+
+class Computation;
 
 using TensorLoc = HostLoc;
 
@@ -37,7 +38,7 @@ public:
      * some tensor can be attached to multiple computations, e.g., 
      * a tensor is modified by a computation
      */
-    std::list<Computation> source_cps;
+    std::vector<Computation> source_cps;
     //Computation source_cp;
     /**
      * \bref the index of output of source_cp

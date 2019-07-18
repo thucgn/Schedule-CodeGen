@@ -16,7 +16,7 @@ namespace
 
 #define DEFINE_VISIT(type, node) \
     case NodeType::type: \
-    return ((T*)this)->visit((const Node*)n, std::forward<Args>(args)...);
+    return ((T*)this)->visit((const node*)n, std::forward<Args>(args)...);
 
 } // namespace
 
@@ -62,6 +62,7 @@ private:
             DEFINE_VISIT(OR, Or);
             DEFINE_VISIT(NOT, Not);
             DEFINE_VISIT(CALL, Call);
+            DEFINE_VISIT(SELECT, Select);
             /*case NodeType::LET_STMT:
             case NodeType::SELECT:
             case NodeType::FOR:
@@ -82,12 +83,12 @@ private:
         switch (n->node_type)
         {
             DEFINE_VISIT(LET_STMT, LetStmt);
-            DEFINE_VISIT(SELECT, Select);
             DEFINE_VISIT(FOR, For);
             DEFINE_VISIT(BLOCK, Block);
             DEFINE_VISIT(IF_THEN_ELSE, IfThenElse);
             DEFINE_VISIT(STORE, Store);
             DEFINE_VISIT(REDUCE, Reduce);
+            DEFINE_VISIT(EVALUEATE, Evaluate);
             DEFINE_VISIT(DMA_LOAD, DMALoad);
             DEFINE_VISIT(DMA_STORE, DMAStore);
             DEFINE_VISIT(ALLOCATE, Allocate);
@@ -124,6 +125,7 @@ public:
 
 
 };
+
 
 } // namespace SC
 

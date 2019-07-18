@@ -139,7 +139,7 @@ Stmt LetStmt::make(VarExpr var, Expr value, Stmt body)
     return n;
 }
 
-Stmt Select::make(Expr cond, Expr true_case, Expr false_case)
+Expr Select::make(Expr cond, Expr true_case, Expr false_case)
 {
     CHECK_IF(cond.notNull(), "cond is null");
     CHECK_IF(true_case.notNull(), "ture_case is null");

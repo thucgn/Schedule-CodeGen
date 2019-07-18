@@ -19,6 +19,7 @@ namespace SC
 
 class Computation;
 class Schedule;
+class Tensor;
 
 
 /**
@@ -27,14 +28,28 @@ class Schedule;
  */
 class ComputationNode : public FunctionNode
 {
+protected:
+    virtual void calcu_input_tensors() = 0;
+    virtual void calcu_output_tensors() = 0;
 public:
     ComputationNode(FunctionNodeType type) : FunctionNode(type) {}
+
+    std::vector<Tensor> inputTensors;
+    std::vector<Tensor> outputTensors;
+
     virtual ~ComputationNode() {}
     /**
      * \bref root iters represents the outer most loops
      */
     virtual const std::vector<Iter>& rootIters() const = 0; 
     virtual Stmt buildBody() const = 0;
+
+    const std::vector<Tensor>& input_tensors() const {
+        return inputTensors;
+    }
+    const std::vector<Tensor>& output_tensors() const {
+        return outputTensors;
+    }
 };
 
 /**
@@ -50,6 +65,7 @@ public:
     const ComputationNode* get() const { return (const ComputationNode*)ptr; }
     const ComputationNode* operator->() const { return get(); }
     const ComputationNode& operator*() const { return *get(); }
+
 };
 
 template <typename T>
@@ -65,6 +81,18 @@ public:
  */
 class NestLoopComNode : public CPNode<NestLoopComNode>
 {
+protected:
+    /**
+     * \bref calcu input tensors, and set the source_computation
+     * of the tensors
+     */
+    void calcu_input_tensors() override;
+    /**
+     * \bref calcu output tensors, and set the source_computation
+     * of the tensors
+     */
+    void calcu_output_tensors() override;
+
 public:
     /**
      * \bref label

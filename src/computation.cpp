@@ -9,9 +9,31 @@
 #include "schedule.h"
 #include "util.h"
 #include "ir.h"
+#include "tensor.h"
+
+namespace {
+
+
+} // local namespace
 
 namespace SC
 {
+
+void NestLoopComNode::calcu_input_tensors()
+{
+    for(auto& stmt : body)
+    {
+        switch(stmt->node_type)
+        {
+            case NodeType::LetStmt:
+        }        
+    }
+}
+
+void NestLoopComNode::calcu_output_tensors()
+{
+    
+}
 
 Computation NestLoopComNode::make(Schedule& s,
         const std::string& name,
