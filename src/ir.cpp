@@ -90,9 +90,9 @@ Expr Call::make(RetType rt,
         std::vector<Expr>&& args,
         Function func)
 {
-    CHECK_IF(rt.defined(), "invalied rettype");
+    //CHECK_IF(rt.defined(), "invalied rettype");
     CHECK_IF(name.length() > 0, "call must have a name");
-    CHECK_IF(func.notNull(), "call to a null func");
+    //CHECK_IF(func.notNull(), "call to a null func");
 
     Call* n = new Call();
     n->data_type = rt;

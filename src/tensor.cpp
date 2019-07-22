@@ -51,7 +51,7 @@ Tensor::Tensor(const std::string& name,
 
 Expr Tensor::operator()(std::vector<Expr> indices) const
 {
-    CHECK_IF(indices.size()==ndim(), "indices size mismatch the ndim of tensor");
+    //CHECK_IF(indices.size()==ndim(), "indices size mismatch the ndim of tensor");
     Expr n = Call::make(
             get()->data_type,
             CallType::TENSOR_ACCESS,

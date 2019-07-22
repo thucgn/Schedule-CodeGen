@@ -21,6 +21,20 @@ namespace {
 namespace SC
 {
 
+class LeftFuncTraveller : public IRFuncTraveller
+{
+public:
+    void visit(const Store* n) override {
+        traverse(n->lhs);
+    }
+    void visit(const Reduce* n) override {
+        traverse(n->lhs);
+    }
+    void visit(const DMALoad* n) override {
+                
+    }
+};
+
 void gather_tensors(IRFuncTraveller::TravelFunc f, const NodeRef& n)
 {
     IRFuncTraveller traverller(f);
@@ -217,6 +231,8 @@ void NestLoopComNode::calcu_input_tensors()
                 }
                 break;
             }
+            case NodeType::EVALUEATE:
+                break;
             default:
                 CHECK_IF(false, "cannot handle this stmt as initial body of operation");
 
@@ -287,6 +303,8 @@ void NestLoopComNode::calcu_output_tensors()
                 }
                 break;
             }
+            case NodeType::EVALUEATE:
+                break;
             default:
                 CHECK_IF(false, "cannot handle this stmt as initial body of operation");
 

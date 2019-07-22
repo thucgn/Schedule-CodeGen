@@ -205,6 +205,15 @@ inline Stmt reduce_add(Expr lhs, Expr rhs)
     return Reduce::make(ReduceType::ADD, std::move(lhs), std::move(rhs), {});
 }
 
+
+inline Stmt call_external(const std::string& name, 
+        std::vector<Expr>&& args)
+{
+    Expr e = Call::make(DataType(), CallType::EXTERNAL,
+            name, std::forward<std::vector<Expr>&&>(args), Function());
+    return Evaluate::make(e);
+}
+
 /**
  * \bref placeholder
  */
