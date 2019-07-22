@@ -103,7 +103,7 @@ Stmt IRMutator::mutateNode(const LetStmt* n)
     return LetStmt::make(n->var, new_value, new_body);
 }
 
-Stmt IRMutator::mutateNode(const Select* n)
+Expr IRMutator::mutateNode(const Select* n)
 {
     Expr new_cond = mutate(n->cond);
     Expr new_true_case = mutate(n->true_case);

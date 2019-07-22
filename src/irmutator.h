@@ -58,8 +58,9 @@ protected:
     virtual Expr mutateNode(const Or* n);
     virtual Expr mutateNode(const Not* n);
     virtual Expr mutateNode(const Call* n);
+    virtual Expr mutateNode(const Select* n);
     virtual Stmt mutateNode(const LetStmt* n);
-    virtual Stmt mutateNode(const Select* n);
+    //virtual Stmt mutateNode(const Select* n);
     virtual Stmt mutateNode(const For* n);
     virtual Stmt mutateNode(const Block* n);
     virtual Stmt mutateNode(const IfThenElse* n);

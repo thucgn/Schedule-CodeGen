@@ -11,6 +11,7 @@
 #include "function.h"
 #include "iter.h"
 #include "ir.h"
+#include "tensor.h"
 #include <vector>
 
 
@@ -19,7 +20,6 @@ namespace SC
 
 class Computation;
 class Schedule;
-class Tensor;
 
 
 /**
@@ -28,10 +28,9 @@ class Tensor;
  */
 class ComputationNode : public FunctionNode
 {
-protected:
+public:
     virtual void calcu_input_tensors() = 0;
     virtual void calcu_output_tensors() = 0;
-public:
     ComputationNode(FunctionNodeType type) : FunctionNode(type) {}
 
     std::vector<Tensor> inputTensors;
@@ -45,6 +44,7 @@ public:
     virtual Stmt buildBody() const = 0;
 
     const std::vector<Tensor>& input_tensors() const {
+
         return inputTensors;
     }
     const std::vector<Tensor>& output_tensors() const {
@@ -55,18 +55,18 @@ public:
 /**
  * \bref reference of computation node
  */
-class Computation : public Function
+/*class Computation : public Function
 {
 public:
     using ContainerType = ComputationNode;
     Computation() : Function() {}
-    Computation(const ComputationNode* p) : Function(p) {}
+    Computation(const FunctionNode* p) : Function(p) {}
 
     const ComputationNode* get() const { return (const ComputationNode*)ptr; }
     const ComputationNode* operator->() const { return get(); }
     const ComputationNode& operator*() const { return *get(); }
 
-};
+};*/
 
 template <typename T>
 class CPNode : public ComputationNode
@@ -75,6 +75,52 @@ public:
     CPNode() : ComputationNode(T::_node_type) {}
     virtual ~CPNode() {}
 };
+
+
+class PlaceHolderComNode : public CPNode<PlaceHolderComNode>
+{
+
+public:
+    std::vector<Expr> shape;
+    DataType data_type;
+    std::vector<Iter> root_iters;
+    static const FunctionNodeType _node_type = FunctionNodeType::PLACEHOLDER;
+
+    void calcu_input_tensors() override {}
+    void calcu_output_tensors() override;
+
+    const std::vector<Iter>& rootIters() const override { 
+        return root_iters; };
+    Stmt buildBody() const override { return Stmt(); }
+
+    static Computation make(const std::string& name,
+            std::vector<Expr> shape,
+            DataType data_type);
+
+};
+
+class AllocateComNode : public CPNode<AllocateComNode>
+{
+public:
+    std::vector<Expr> shape;
+    DataType data_type;
+    std::vector<Iter> root_iters;
+    TensorLoc loc;
+    static const FunctionNodeType _node_type = FunctionNodeType::ALLOCATE;
+
+    void calcu_input_tensors() override {}
+    void calcu_output_tensors() override;
+
+    const std::vector<Iter>& rootIters() const override { 
+        return root_iters; };
+    Stmt buildBody() const override;
+
+    static Computation make(const std::string& name,
+            std::vector<Expr> shape,
+            DataType data_type,
+            TensorLoc loc=TensorLoc::MEM);
+};
+
 
 /**
  * \bref nest loop computations

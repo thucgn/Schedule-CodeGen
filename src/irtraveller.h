@@ -8,8 +8,11 @@
 #ifndef _IRTRAVELLER_H
 #define _IRTRAVELLER_H
 
+#include <functional>
+#include <unordered_set>
 #include "node.h"
 #include "ir.h"
+#include "hash.h"
 
 namespace 
 {
@@ -108,6 +111,32 @@ public:
     virtual void visit(const Allocate* n);
     virtual void visit(const Free* n);
 };
+
+/**
+ * \bref traverse the IR from top to bottom in post order,
+ * and apply the function to node
+ */
+class IRFuncTraveller : public IRTraveller
+{
+public:
+    using TravelFunc = std::function<void(const NodeRef&)>;
+
+    explicit IRFuncTraveller(TravelFunc f):f(f) {}
+    void traverse(const NodeRef& n) override {
+        if(visited.count(n)) 
+            return;
+        visited.insert(n);
+        // traverse in post order
+        IRTraveller::traverse(n);
+        // apply the function to the node
+        f(n);
+    }
+
+private:
+    TravelFunc f;
+    std::unordered_set<NodeRef> visited;
+};
+
 
 } // namespace SC
 

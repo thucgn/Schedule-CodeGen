@@ -32,6 +32,15 @@ struct hash_ref
     }
 };
 
+template <>
+struct hash<::SC::NodeRef>
+{
+    std::size_t operator()(::SC::NodeRef const& o) const noexcept
+    {
+        return std::hash<const ::SC::Node*>{}(o.get());
+    } 
+};
+
 /**
  * \bref hash code of Iter
  */

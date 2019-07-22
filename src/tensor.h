@@ -22,7 +22,24 @@ namespace SC
     LDM,
 };*/
 
-class Computation;
+class ComputationNode;
+
+/**
+ * \bref reference of computation node
+ * define Computation here to avoid two-way reference
+ */
+class Computation : public Function
+{
+public:
+    using ContainerType = ComputationNode;
+    Computation() : Function() {}
+    Computation(const FunctionNode* p) : Function(p) {}
+
+    const ComputationNode* get() const { return (const ComputationNode*)ptr; }
+    const ComputationNode* operator->() const { return get(); }
+    const ComputationNode& operator*() const { return *get(); }
+
+};
 
 using TensorLoc = HostLoc;
 
@@ -39,6 +56,7 @@ public:
      * a tensor is modified by a computation
      */
     std::vector<Computation> source_cps;
+
     //Computation source_cp;
     /**
      * \bref the index of output of source_cp
@@ -83,6 +101,11 @@ public:
     const TensorNode* get() const { return (const TensorNode*)ptr; }
     const TensorNode* operator->() const { return get(); }
     const TensorNode& operator*() const { return *get(); }
+
+    void add_source_computation(Computation cp) {
+        TensorNode* n = (TensorNode*)ptr;
+        n->source_cps.emplace_back(std::move(cp));
+    }
 
     const std::vector<Expr>& shape() const override { return get()->shape; }
     size_t ndim() const { return get()->shape.size(); }
@@ -135,6 +158,20 @@ public:
     }
 
 };
+
+} // namespace SC
+
+namespace std
+{
+template <>
+struct hash<::SC::Tensor>
+{
+    std::size_t operator()(::SC::Tensor const& o) const noexcept
+    {
+        return std::hash<const ::SC::TensorNode*>{}(o.get());
+    }    
+};
+
 
 } // namespace SC
 

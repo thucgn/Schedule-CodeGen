@@ -15,7 +15,9 @@ namespace SC
 
 enum class FunctionNodeType : uint8_t
 {
-    NEST_LOOP
+    NEST_LOOP,
+    PLACEHOLDER,
+    ALLOCATE,
 };
 
 class FunctionNode

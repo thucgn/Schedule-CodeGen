@@ -17,6 +17,8 @@
 namespace SC
 {
 
+class Tensor;
+
 /**
  * \bref type of Call node, including external and internal call.
  */
