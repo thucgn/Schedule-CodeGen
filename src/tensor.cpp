@@ -22,7 +22,8 @@ Tensor TensorNode::make(const std::string& name,
     n->name = name;
     n->data_type = type;
     n->shape = std::move(shape);
-    n->source_cps.emplace_back(std::move(source_computation));
+    if(source_computation.notNull())
+        n->source_cps.emplace_back(std::move(source_computation));
     //n->source_cp = std::move(source_computation);
     n->source_output_index = source_output_index;
     n->location = loc;
@@ -35,7 +36,9 @@ Tensor::Tensor(const std::string& name,
         TensorLoc loc)
     :Tensor(TensorNode::make(name,
                 type, shape, Computation(), 0, loc))
-{}
+{
+
+}
 
 Tensor::Tensor(const std::string& name,
         std::vector<Expr> shape,
@@ -56,6 +59,13 @@ Expr Tensor::operator()(std::vector<Expr> indices) const
             std::move(indices),
             *this);
     return n; 
+}
+
+void Tensor::add_source_computation(Computation cp)
+{
+    TensorNode* n = (TensorNode*)ptr;
+    LOG("tensor %s add cp %s", get()->name.c_str(), cp->name.c_str());
+    n->source_cps.push_back(cp);
 }
 
 

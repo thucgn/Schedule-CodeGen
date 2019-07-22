@@ -96,6 +96,11 @@ public:
     static Computation make(const std::string& name,
             std::vector<Expr> shape,
             DataType data_type);
+    static Computation make(
+            Schedule& s,
+            const std::string& name,
+            std::vector<Expr> shape,
+            DataType data_type);
 
 };
 
@@ -116,6 +121,12 @@ public:
     Stmt buildBody() const override;
 
     static Computation make(const std::string& name,
+            std::vector<Expr> shape,
+            DataType data_type,
+            TensorLoc loc=TensorLoc::MEM);
+    static Computation make(
+            Schedule& s,
+            const std::string& name,
             std::vector<Expr> shape,
             DataType data_type,
             TensorLoc loc=TensorLoc::MEM);
@@ -184,12 +195,43 @@ public:
             std::vector<Stmt> body);
 };
 
+
+
 /**
  * \bref lhs += rhs
  */
 inline Stmt reduce_add(Expr lhs, Expr rhs)
 {
     return Reduce::make(ReduceType::ADD, std::move(lhs), std::move(rhs), {});
+}
+
+/**
+ * \bref placeholder
+ */
+inline Tensor placeholder(Schedule& s,
+        const std::string& name,
+        std::vector<Expr> shape,
+        DataType data_type)
+{
+    auto cp = PlaceHolderComNode::make(s,
+            name, std::move(shape),
+            data_type);
+    return cp->outputTensors[0];
+}
+
+/**
+ * \bref placeholder
+ */
+inline Tensor allocate_tensor(Schedule& s,
+        const std::string& name,
+        std::vector<Expr> shape,
+        DataType data_type,
+        TensorLoc loc=TensorLoc::MEM)
+{
+    auto cp = AllocateComNode::make(s,
+            name, std::move(shape),
+            data_type,loc);
+    return cp->outputTensors[0];
 }
 
 /**

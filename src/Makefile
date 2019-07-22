@@ -314,6 +314,33 @@ irmutator.cpp.s:
 	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/irmutator.cpp.s
 .PHONY : irmutator.cpp.s
 
+irtraveller.o: irtraveller.cpp.o
+
+.PHONY : irtraveller.o
+
+# target to build an object file
+irtraveller.cpp.o:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/irtraveller.cpp.o
+.PHONY : irtraveller.cpp.o
+
+irtraveller.i: irtraveller.cpp.i
+
+.PHONY : irtraveller.i
+
+# target to preprocess a source file
+irtraveller.cpp.i:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/irtraveller.cpp.i
+.PHONY : irtraveller.cpp.i
+
+irtraveller.s: irtraveller.cpp.s
+
+.PHONY : irtraveller.s
+
+# target to generate assembly for a file
+irtraveller.cpp.s:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/irtraveller.cpp.s
+.PHONY : irtraveller.cpp.s
+
 irvisitor.o: irvisitor.cpp.o
 
 .PHONY : irvisitor.o
@@ -587,6 +614,9 @@ help:
 	@echo "... irmutator.o"
 	@echo "... irmutator.i"
 	@echo "... irmutator.s"
+	@echo "... irtraveller.o"
+	@echo "... irtraveller.i"
+	@echo "... irtraveller.s"
 	@echo "... irvisitor.o"
 	@echo "... irvisitor.i"
 	@echo "... irvisitor.s"

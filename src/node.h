@@ -240,7 +240,7 @@ public:
     static const NodeType _node_type = NodeType::FLOATIMM;
     static const FloatImm* make(DataType t, double v)
     {
-        CHECK_IF(t.isUint() && t.isScalar(), "Not a scalar UInt, or unsupported bits");
+        CHECK_IF(t.isFloat() && t.isScalar(), "Not a scalar Float, or unsupported bits");
         FloatImm* n = new FloatImm();
         if(t.bits() == 32)
             v = (float)v;

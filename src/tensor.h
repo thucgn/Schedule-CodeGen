@@ -102,10 +102,7 @@ public:
     const TensorNode* operator->() const { return get(); }
     const TensorNode& operator*() const { return *get(); }
 
-    void add_source_computation(Computation cp) {
-        TensorNode* n = (TensorNode*)ptr;
-        n->source_cps.emplace_back(std::move(cp));
-    }
+    void add_source_computation(Computation cp);
 
     const std::vector<Expr>& shape() const override { return get()->shape; }
     size_t ndim() const { return get()->shape.size(); }
@@ -144,6 +141,11 @@ public:
         operator Expr() const
         {
             return tensor(indices);
+        }
+
+        Stmt operator=(Expr rhs) const
+        {
+            return Store::make(tensor(indices), rhs);
         }
 
     private:

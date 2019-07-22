@@ -95,6 +95,26 @@ Computation AllocateComNode::make(
         t.add_source_computation(cp);
     return cp;
 }
+Computation AllocateComNode::make(
+        Schedule& s,
+        const std::string& name,
+        std::vector<Expr> shape,
+        DataType data_type,
+        TensorLoc loc)
+{
+    auto n = new AllocateComNode(); 
+    n->name = name;
+    n->shape = std::move(shape);
+    n->data_type = data_type;
+    n->loc = loc;
+    n->calcu_output_tensors();
+    n->calcu_input_tensors();
+    Computation cp(n);
+    for(auto& t : n->outputTensors)
+        t.add_source_computation(cp);
+    s.addComputation(cp);
+    return cp;
+}
 
 
 void PlaceHolderComNode::calcu_output_tensors()
@@ -120,6 +140,25 @@ Computation PlaceHolderComNode::make(
     return cp;
 }
 
+Computation PlaceHolderComNode::make(
+        Schedule& s,
+        const std::string& name,
+        std::vector<Expr> shape,
+        DataType data_type)
+{
+    auto n = new PlaceHolderComNode();
+    n->name = name;
+    n->shape = std::move(shape);
+    n->data_type = data_type;
+    n->calcu_output_tensors();
+    n->calcu_input_tensors();
+    Computation cp(n);
+    for(auto& t : n->outputTensors)
+        t.add_source_computation(cp);
+    s.addComputation(cp);
+    return cp;
+}
+
 
 void NestLoopComNode::calcu_input_tensors()
 {
@@ -128,7 +167,7 @@ void NestLoopComNode::calcu_input_tensors()
     std::vector<Tensor> tensors;
     auto func = [&visited, &tensors](const NodeRef& n){
         const Call* cn = n.cast_to<Call>();
-        if(cn != nullptr || cn->call_type==CallType::TENSOR_ACCESS)
+        if(cn != nullptr && cn->call_type==CallType::TENSOR_ACCESS)
         {
             const TensorNode* tn = cn->tb.cast_to<TensorNode>();
             const Tensor& t = tn->source_cps[0]->outputTensors[tn->source_output_index];
@@ -151,7 +190,7 @@ void NestLoopComNode::calcu_input_tensors()
             }
             case NodeType::REDUCE:
             {
-                gather_tensors(func, stmt.cast_to<Store>()->rhs);
+                gather_tensors(func, stmt.cast_to<Reduce>()->rhs);
                 break;
             }
             case NodeType::DMA_LOAD:
@@ -194,9 +233,13 @@ void NestLoopComNode::calcu_output_tensors()
     std::vector<Tensor> tensors;
     auto func = [&visited, &tensors](const NodeRef& n){
         const Call* cn = n.cast_to<Call>();
-        if(cn != nullptr || cn->call_type==CallType::TENSOR_ACCESS)
+        if(cn != nullptr && cn->call_type==CallType::TENSOR_ACCESS)
         {
             const TensorNode* tn = cn->tb.cast_to<TensorNode>();
+            LOG("name tensor %s", tn->name.c_str());
+            LOG("cp size %lu", tn->source_cps.size());
+            LOG("first cp name %s", tn->source_cps[0]->name.c_str());
+            LOG("first cp tensor name %s", tn->source_cps[0]->outputTensors[0]->name.c_str());
             const Tensor& t = tn->source_cps[0]->outputTensors[tn->source_output_index];
             if(!visited.count(t))
             {
@@ -217,7 +260,7 @@ void NestLoopComNode::calcu_output_tensors()
             }
             case NodeType::REDUCE:
             {
-                gather_tensors(func, stmt.cast_to<Store>()->lhs);
+                gather_tensors(func, stmt.cast_to<Reduce>()->lhs);
                 break;
             }
             case NodeType::DMA_LOAD:

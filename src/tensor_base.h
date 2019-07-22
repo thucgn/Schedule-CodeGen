@@ -59,7 +59,7 @@ public:
 
     template <typename T>
     const T* cast_to() const {
-        static_assert(std::is_base_of<TensorBase, T>::value, "cannot convert to TensorBase");
+        static_assert(std::is_base_of<TensorBaseNode, T>::value, "cannot convert to TensorBase");
         return (const T*)ptr;
     }
 };

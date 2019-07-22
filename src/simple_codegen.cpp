@@ -262,7 +262,7 @@ void SimpleCodegenC::visit(const For* n)
         case ForType::SERIAL:
             break;
         case ForType::PARALLEL:
-            os << indent << "#pragma omp parallel for\n";
+            os << indent << "//parallel for\n";
             break;
         case ForType::VECTORIZED:
             break;

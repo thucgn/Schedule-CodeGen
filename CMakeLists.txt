@@ -15,6 +15,6 @@ add_subdirectory (src)
 
 # add_executable (main ${testsrc})
 
-add_executable (main test_dense.cpp)
+add_executable (main test_direct.cpp)
 
 target_link_libraries (main sc)

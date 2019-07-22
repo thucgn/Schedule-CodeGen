@@ -46,6 +46,7 @@ namespace
             break;
         case IterSche::PARALLELED:
             ret = ForType::PARALLEL;
+            break;
         case IterSche::UNROLL:
             ret = ForType::UNROLL;
             break;
@@ -180,6 +181,9 @@ Stmt lowerStage(Stage& s)
 
     // deal with body of computation
     Stmt innermost_body = s->original_cp->buildBody();
+    // deal with placeholder
+    if(!innermost_body.notNull())
+        return Stmt();
     Stmt ret = innermost_body;
     if(loops.size() > 0)
     {
@@ -251,18 +255,25 @@ Stmt lowerStage(Stage& s)
 
 Stmt buildBody(Schedule& s)
 {
-    if(s->stages.size() == 1)
-        return lowerStage(s->stages[0]);
 
-    Stmt body = Block::make(
-            lowerStage(s->stages[0]),
-            lowerStage(s->stages[1]));
+    std::vector<Stmt> stmts;
+    for(auto& stage : s->stages)
+    {
+        Stmt stmt = lowerStage(stage);
+        if(stmt.notNull())
+            stmts.push_back(stmt);
+    }
 
-    for(unsigned i = 2; i < s->stages.size(); i ++)
+    if(stmts.size() == 1)
+        return stmts[0];
+
+    Stmt body = Block::make(stmts[0], stmts[1]);
+
+    for(unsigned i = 2; i < stmts.size(); i ++)
     {
         body = Block::make(
                 body,
-                lowerStage(s->stages[i]));
+                stmts[i]);
     }
 
 
