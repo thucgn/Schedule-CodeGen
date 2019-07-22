@@ -123,25 +123,33 @@ void IRTraveller::visit(const Evaluate* n)
 }
 void IRTraveller::visit(const DMALoad* n)
 {
-    for(auto& e : n->src_start)    
+    traverse(n->src_start);
+    traverse(n->src_end);
+    traverse(n->dst_start);
+    traverse(n->dst_end);
+    /*for(auto& e : n->src_start)    
         traverse(e);
     for(auto& e : n->src_end)    
         traverse(e);
     for(auto& e : n->dst_start)    
         traverse(e);
     for(auto& e : n->dst_end)    
-        traverse(e);
+        traverse(e);*/
 }
 void IRTraveller::visit(const DMAStore* n)
 {
-    for(auto& e : n->src_start)    
+    traverse(n->src_start);
+    traverse(n->src_end);
+    traverse(n->dst_start);
+    traverse(n->dst_end);
+    /*for(auto& e : n->src_start)    
         traverse(e);
     for(auto& e : n->src_end)    
         traverse(e);
     for(auto& e : n->dst_start)    
         traverse(e);
     for(auto& e : n->dst_end)    
-        traverse(e);
+        traverse(e);*/
 }
 void IRTraveller::visit(const Allocate* n)
 {

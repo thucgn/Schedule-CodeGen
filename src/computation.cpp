@@ -24,6 +24,7 @@ namespace SC
 class LeftFuncTraveller : public IRFuncTraveller
 {
 public:
+    explicit LeftFuncTraveller(TravelFunc f):IRFuncTraveller(f){}
     void visit(const Store* n) override {
         traverse(n->lhs);
     }
@@ -31,7 +32,27 @@ public:
         traverse(n->lhs);
     }
     void visit(const DMALoad* n) override {
-                
+        traverse(n->dst_start);            
+    }
+    void visit(const DMAStore* n) override {
+        traverse(n->dst_start);
+    }
+};
+class RightFuncTraveller : public IRFuncTraveller
+{
+public:
+    explicit RightFuncTraveller(TravelFunc f):IRFuncTraveller(f){}
+    void visit(const Store* n) override {
+        traverse(n->rhs);
+    }
+    void visit(const Reduce* n) override {
+        traverse(n->rhs);
+    }
+    void visit(const DMALoad* n) override {
+        traverse(n->src_start);            
+    }
+    void visit(const DMAStore* n) override {
+        traverse(n->src_start);
     }
 };
 
@@ -195,7 +216,9 @@ void NestLoopComNode::calcu_input_tensors()
 
     for(auto& stmt : body)
     {
-        switch(stmt->node_type)
+        RightFuncTraveller rt(func);
+        rt.traverse(stmt);
+        /*switch(stmt->node_type)
         {
             case NodeType::STORE:
             {
@@ -236,7 +259,7 @@ void NestLoopComNode::calcu_input_tensors()
             default:
                 CHECK_IF(false, "cannot handle this stmt as initial body of operation");
 
-        }
+        }*/
     }
     inputTensors = std::move(tensors);
 
@@ -267,7 +290,9 @@ void NestLoopComNode::calcu_output_tensors()
 
     for(auto& stmt : body)
     {
-        switch(stmt->node_type)
+        LeftFuncTraveller lt(func);
+        lt.traverse(stmt);
+        /*switch(stmt->node_type)
         {
             case NodeType::STORE:
             {
@@ -308,7 +333,7 @@ void NestLoopComNode::calcu_output_tensors()
             default:
                 CHECK_IF(false, "cannot handle this stmt as initial body of operation");
 
-        }
+        }*/
     }
     //for(auto& t : tensors)
         //t->source_cps.push_back(*this);

@@ -332,13 +332,11 @@ void SimpleCodegenC::visit(const Evaluate* n)
 
 void SimpleCodegenC::visit(const DMALoad* n)
 {
-    os << indent << "DMA load " << n->dst->name 
-        << " = " << n->src->name << " ...; \n";
+    os << indent << "DMA load ...; \n" ;
 }
 void SimpleCodegenC::visit(const DMAStore* n)
 {
-    os << indent << "DMA Store " << n->dst->name 
-        << " = " << n->src->name << " ...; \n";
+    os << indent << "DMA store ...; \n" ;
 }
 void SimpleCodegenC::visit(const Allocate* n)
 {

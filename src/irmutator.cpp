@@ -178,7 +178,21 @@ Stmt IRMutator::mutateNode(const Evaluate* n)
 
 Stmt IRMutator::mutateNode(const DMALoad* n)
 {
-    std::vector<Expr> new_src_start, new_src_end,
+    Expr nss = mutate(n->src_start);
+    Expr nse = mutate(n->src_end);
+    Expr nds = mutate(n->dst_start);
+    Expr nde = mutate(n->dst_end);
+
+    if(nss.sameAs(n->src_start) 
+        && nse.sameAs(n->src_end)
+        && nds.sameAs(n->dst_start)
+        && nde.sameAs(n->dst_end))
+        return n;
+    else
+        return DMALoad::make(n->tag,
+                nss, nse, nds, nde);
+
+    /*Expr new_src_start, new_src_end,
         new_dst_start, new_dst_end;
     bool changed = false;
     for(auto& e : n->src_start)
@@ -218,12 +232,25 @@ Stmt IRMutator::mutateNode(const DMALoad* n)
                 new_src_start,
                 new_src_end,
                 new_dst_start,
-                new_dst_end);
+                new_dst_end);*/
 
 }
 Stmt IRMutator::mutateNode(const DMAStore* n)
 {
-    std::vector<Expr> new_src_start, new_src_end,
+    Expr nss = mutate(n->src_start);
+    Expr nse = mutate(n->src_end);
+    Expr nds = mutate(n->dst_start);
+    Expr nde = mutate(n->dst_end);
+
+    if(nss.sameAs(n->src_start) 
+        && nse.sameAs(n->src_end)
+        && nds.sameAs(n->dst_start)
+        && nde.sameAs(n->dst_end))
+        return n;
+    else
+        return DMAStore::make(n->tag,
+                nss, nse, nds, nde);
+    /*std::vector<Expr> new_src_start, new_src_end,
         new_dst_start, new_dst_end;
     bool changed = false;
     for(auto& e : n->src_start)
@@ -263,7 +290,7 @@ Stmt IRMutator::mutateNode(const DMAStore* n)
                 new_src_start,
                 new_src_end,
                 new_dst_start,
-                new_dst_end);
+                new_dst_end);*/
 
 }
 

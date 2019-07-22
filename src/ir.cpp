@@ -197,7 +197,37 @@ Stmt For::make(ForType type, VarExpr var,
     return n;
 }
 
+
 Stmt DMALoad::make(const std::string& tag,
+        Expr src_start, Expr src_end,
+        Expr dst_start, Expr dst_end)
+{
+    CHECK_IF(src_start.is_type<Call>() && src_end.is_type<Call>(), "source must be a call to tensor");
+    CHECK_IF(dst_start.is_type<Call>() && dst_end.is_type<Call>(), "destination must be a call to tensor");
+    DMALoad* n = new DMALoad();
+    n->tag = tag;
+    n->src_start = std::move(src_start);
+    n->src_end = std::move(src_end);
+    n->dst_start = std::move(dst_start);
+    n->dst_end = std::move(dst_end);
+    return n;
+}
+Stmt DMAStore::make(const std::string& tag,
+        Expr src_start, Expr src_end,
+        Expr dst_start, Expr dst_end)
+{
+    CHECK_IF(src_start.is_type<Call>() && src_end.is_type<Call>(), "source must be a call to tensor");
+    CHECK_IF(dst_start.is_type<Call>() && dst_end.is_type<Call>(), "destination must be a call to tensor");
+    DMAStore* n = new DMAStore();
+    n->tag = tag;
+    n->src_start = std::move(src_start);
+    n->src_end = std::move(src_end);
+    n->dst_start = std::move(dst_start);
+    n->dst_end = std::move(dst_end);
+    return n;
+}
+
+/*Stmt DMALoad::make(const std::string& tag,
         TensorBase src, TensorBase dst,
         std::vector<Expr> src_start,
         std::vector<Expr> src_end,
@@ -239,7 +269,7 @@ Stmt DMAStore::make(const std::string& tag,
     n->dst_start = std::move(dst_start);
     n->dst_end = std::move(dst_end);
     return n;
-}
+}*/
 
 Stmt Store::make(Expr lhs, Expr rhs)
 {

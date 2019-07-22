@@ -144,25 +144,33 @@ void IRVisitor::visit(const Evaluate* n)
 
 void IRVisitor::visit(const DMALoad* n)
 {
-    for(auto& e : n->src_start)    
+    n->src_start.accept(this);
+    n->src_end.accept(this);
+    n->dst_start.accept(this);
+    n->dst_end.accept(this);
+    /*for(auto& e : n->src_start)    
         e.accept(this);
     for(auto& e : n->src_end)    
         e.accept(this);
     for(auto& e : n->dst_start)    
         e.accept(this);
     for(auto& e : n->dst_end)    
-        e.accept(this);
+        e.accept(this);*/
 }
 void IRVisitor::visit(const DMAStore* n)
 {
-    for(auto& e : n->src_start)    
+    n->src_start.accept(this);
+    n->src_end.accept(this);
+    n->dst_start.accept(this);
+    n->dst_end.accept(this);
+    /*for(auto& e : n->src_start)    
         e.accept(this);
     for(auto& e : n->src_end)    
         e.accept(this);
     for(auto& e : n->dst_start)    
         e.accept(this);
     for(auto& e : n->dst_end)    
-        e.accept(this);
+        e.accept(this);*/
 }
 void IRVisitor::visit(const Allocate* n)
 {

@@ -340,7 +340,7 @@ public:
 
 };
 
-class DMALoad : public StmtNode<DMALoad>
+/*class DMALoad : public StmtNode<DMALoad>
 {
 public:
     std::string tag;
@@ -377,6 +377,35 @@ public:
             std::vector<Expr> src_end,
             std::vector<Expr> dst_start,
             std::vector<Expr> dst_end);
+};*/
+class DMALoad : public StmtNode<DMALoad>
+{
+public:
+    std::string tag;
+    /*
+     * \bref copy a cube of [src_start, src_end] to [dst_start, dst_end]
+     */
+    Expr src_start, src_end;
+    Expr dst_start, dst_end;
+    static const NodeType _node_type = NodeType::DMA_LOAD;
+    static Stmt make(const std::string& tag,
+            Expr src_start, Expr src_end,
+            Expr dst_start, Expr dst_end);
+};
+
+class DMAStore : public StmtNode<DMAStore>
+{
+public:
+    std::string tag;
+    /*
+     * \bref copy a cube of [src_start, src_end] to [dst_start, dst_end]
+     */
+    Expr src_start, src_end;
+    Expr dst_start, dst_end;
+    static const NodeType _node_type = NodeType::DMA_STORE;
+    static Stmt make(const std::string& tag,
+            Expr src_start, Expr src_end,
+            Expr dst_start, Expr dst_end);
 };
 /**
  * \bref Store
