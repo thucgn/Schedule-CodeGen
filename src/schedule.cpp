@@ -268,6 +268,13 @@ Stage& Stage::compute_at(Stage s, Iter scope)
     return *this;
 }
 
+Schedule ScheduleNode::make(Computation cp)
+{
+    CHECK_IF(cp.notNull(), " initial computation of schedule cannot be NULL");
+    CHECK_IF(false, "not implemented");
+    return ScheduleNode::make();
+}
+
 Schedule ScheduleNode::make(std::vector<Computation> cps)
 {
     CHECK_IF(cps.size() > 0, "computation vector is empty");
@@ -279,6 +286,7 @@ Schedule ScheduleNode::make(std::vector<Computation> cps)
     }
     return Schedule(s);
 }
+
 
 Schedule ScheduleNode::make(std::vector<Stage> ss)
 {

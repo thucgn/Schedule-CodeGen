@@ -15,8 +15,10 @@ add_subdirectory (src)
 
 # add_executable (main ${testsrc})
 
-add_executable (main test_gemm.cpp)
+add_executable (maindirect test_direct.cpp)
+add_executable (maingemm test_gemm.cpp)
 add_executable (mainconv test_conv.cpp)
 
-target_link_libraries (main sc)
+target_link_libraries (maindirect sc)
+target_link_libraries (maingemm sc)
 target_link_libraries (mainconv sc)

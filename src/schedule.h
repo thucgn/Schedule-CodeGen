@@ -167,6 +167,8 @@ public:
      */
     std::unordered_map<Computation, Stage> cp2stage;
 
+    static Schedule make(Computation cp);
+
     static Schedule make(std::vector<Computation> cps);
     
     static Schedule make(std::vector<Stage> ss);
@@ -202,6 +204,10 @@ public:
     Schedule() : RefCountPtr<ScheduleNode>() {}
     explicit Schedule(ScheduleNode* p) : 
         RefCountPtr<ScheduleNode>(p)
+    {}
+
+    Schedule(Computation cp) : 
+        RefCountPtr<ScheduleNode>(ScheduleNode::make(cp))
     {}
 
     static Schedule empty_schedule() { return ScheduleNode::make(); }
