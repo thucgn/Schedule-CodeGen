@@ -48,15 +48,17 @@ public:
         kk = Iter("k", k, IterType::REDUCTION);
         LOG("dense parameter m %d n %d k %d", m, n, k);
     }
-    void define(Schedule& sche, Space& spa) override 
+    Computation define(Space& spa) override 
     {
         //Schedule s = Schedule::empty_schedule();
         Stmt reduce = reduce_add(C[im][jn], A[im][kk]*B[kk][jn]);
-        cp = nest_loop_computation(sche, "main", {im, jn, kk}, {reduce});
+        cp = nest_loop_computation("main", {im, jn, kk}, {reduce});
         Axis io, ii, jo, ji;
         std::tie(io, ii) = spa.define_split("mc", im, {2, 4, 8, 16, 32, 64});
         std::tie(jo, ji) = spa.define_split("nc", jn, {2, 4, 8, 16, 32, 64});
         spa.define_reorder("reorderij", { {io, jo, ii, ji, kk} });
+
+        return cp;
     }
     void schedule(Schedule& s, Space& spa) override
     {

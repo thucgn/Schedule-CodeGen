@@ -167,13 +167,13 @@ public:
      */
     std::unordered_map<Computation, Stage> cp2stage;
 
-    static Schedule make(Computation cp);
+    //static Schedule make(Computation cp);
 
     static Schedule make(std::vector<Computation> cps);
     
     static Schedule make(std::vector<Stage> ss);
 
-    static Schedule make();
+    //static Schedule make();
 
 private:
     mutable RefCount ref_count;
@@ -200,6 +200,9 @@ inline void destroy<ScheduleNode>(const ScheduleNode* p)
 
 class Schedule : public RefCountPtr<ScheduleNode>
 {
+protected:
+    void construct_cp2stage();
+
 public:
     Schedule() : RefCountPtr<ScheduleNode>() {}
     explicit Schedule(ScheduleNode* p) : 
@@ -207,12 +210,20 @@ public:
     {}
 
     Schedule(Computation cp) : 
-        RefCountPtr<ScheduleNode>(ScheduleNode::make(cp))
-    {}
+        RefCountPtr<ScheduleNode>(ScheduleNode::make({cp}))
+    {
+        construct_cp2stage();
+    }
 
-    static Schedule empty_schedule() { return ScheduleNode::make(); }
+    Schedule(std::vector<Computation> cps) :
+        RefCountPtr<ScheduleNode>(ScheduleNode::make(std::move(cps)))
+    {
+        construct_cp2stage();
+    }
 
-    Stage addComputation(Computation cp);
+    //static Schedule empty_schedule() { return ScheduleNode::make(); }
+
+    //Stage addComputation(Computation cp);
 
     Stage& operator[](Computation cp) const
     {

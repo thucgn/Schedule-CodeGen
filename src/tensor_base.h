@@ -22,10 +22,17 @@ class TensorBaseNode
 public:
     std::string name;
     std::vector<Expr> shape;
+    virtual ~TensorBaseNode() {}
 
+private:
     mutable RefCount ref_count;
 
-    virtual ~TensorBaseNode() {}
+    template <typename T>
+    friend RefCount& ref_count(const T*);
+    
+    template <typename T>
+    friend void destroy(const T*);
+
 };
 
 template <>

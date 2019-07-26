@@ -29,7 +29,7 @@ class Operator
 {
 public:
     virtual void setParameter(Param&) = 0;
-    virtual void define(Schedule& s, Space& spa) = 0;
+    virtual Computation define(Space& spa) = 0;
     virtual void schedule(Schedule& s, Space& spa) = 0;
     virtual Operator* clone() = 0;
 };

@@ -130,6 +130,8 @@ Computation AllocateComNode::make(
         t.add_source_computation(cp);
     return cp;
 }
+
+
 Computation AllocateComNode::make(
         Schedule& s,
         const std::string& name,
@@ -137,6 +139,7 @@ Computation AllocateComNode::make(
         DataType data_type,
         TensorLoc loc)
 {
+    CHECK_IF(false, "deprecated function");
     auto n = new AllocateComNode(); 
     n->name = name;
     n->shape = std::move(shape);
@@ -147,7 +150,7 @@ Computation AllocateComNode::make(
     Computation cp(n);
     for(auto& t : n->outputTensors)
         t.add_source_computation(cp);
-    s.addComputation(cp);
+    //s.addComputation(cp);
     return cp;
 }
 
@@ -181,6 +184,7 @@ Computation PlaceHolderComNode::make(
         std::vector<Expr> shape,
         DataType data_type)
 {
+    CHECK_IF(false, "deprecated function");
     auto n = new PlaceHolderComNode();
     n->name = name;
     n->shape = std::move(shape);
@@ -190,7 +194,7 @@ Computation PlaceHolderComNode::make(
     Computation cp(n);
     for(auto& t : n->outputTensors)
         t.add_source_computation(cp);
-    s.addComputation(cp);
+    //s.addComputation(cp);
     return cp;
 }
 
@@ -340,7 +344,7 @@ void NestLoopComNode::calcu_output_tensors()
     outputTensors = std::move(tensors);
 }
 
-Computation NestLoopComNode::make(Schedule& s,
+Computation NestLoopComNode::make(
         const std::string& name,
         std::vector<Iter> root_iters,
         std::vector<Iter> reduce_iters,
@@ -364,12 +368,42 @@ Computation NestLoopComNode::make(Schedule& s,
     Computation cp(n);
     for(auto& t : n->outputTensors)
         t.add_source_computation(cp);
-    s.addComputation(cp);
 
     return cp;
 }
 
 Computation NestLoopComNode::make(Schedule& s,
+        const std::string& name,
+        std::vector<Iter> root_iters,
+        std::vector<Iter> reduce_iters,
+        std::vector<Stmt> body)
+{
+    CHECK_IF(false, "deprecated function");
+
+    CHECK_IF(body.size()>0, "body is null");
+
+    for(auto& iter : reduce_iters)
+    {
+        CHECK_IF(iter->iter_type == IterType::REDUCTION, 
+                " type of reduce iter must be reduction");
+    }
+
+    NestLoopComNode* n = new NestLoopComNode();
+    n->name = name;
+    n->root_iters = std::move(root_iters);
+    n->reduce_iters = std::move(reduce_iters);
+    n->body = std::move(body);
+    n->calcu_output_tensors();
+    n->calcu_input_tensors();
+    Computation cp(n);
+    for(auto& t : n->outputTensors)
+        t.add_source_computation(cp);
+    //s.addComputation(cp);
+
+    return cp;
+}
+
+Computation NestLoopComNode::make(
         const std::string& name,
         std::vector<Iter> root_iters,
         std::vector<Stmt> body)
@@ -385,7 +419,27 @@ Computation NestLoopComNode::make(Schedule& s,
     Computation cp(n);
     for(auto& t : n->outputTensors)
         t.add_source_computation(cp);
-    s.addComputation(cp);
+    return n;
+}
+Computation NestLoopComNode::make(Schedule& s,
+        const std::string& name,
+        std::vector<Iter> root_iters,
+        std::vector<Stmt> body)
+{
+    CHECK_IF(false, "deprecated function");
+
+    CHECK_IF(body.size()>0, "body is null");
+
+    NestLoopComNode* n = new NestLoopComNode();
+    n->name = name;
+    n->root_iters = std::move(root_iters);
+    n->body = std::move(body);
+    n->calcu_output_tensors();
+    n->calcu_input_tensors();
+    Computation cp(n);
+    for(auto& t : n->outputTensors)
+        t.add_source_computation(cp);
+    //s.addComputation(cp);
     return n;
 }
 

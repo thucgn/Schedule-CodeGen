@@ -260,6 +260,33 @@ constantfold_pass.cpp.s:
 	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/constantfold_pass.cpp.s
 .PHONY : constantfold_pass.cpp.s
 
+graph.o: graph.cpp.o
+
+.PHONY : graph.o
+
+# target to build an object file
+graph.cpp.o:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/graph.cpp.o
+.PHONY : graph.cpp.o
+
+graph.i: graph.cpp.i
+
+.PHONY : graph.i
+
+# target to preprocess a source file
+graph.cpp.i:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/graph.cpp.i
+.PHONY : graph.cpp.i
+
+graph.s: graph.cpp.s
+
+.PHONY : graph.s
+
+# target to generate assembly for a file
+graph.cpp.s:
+	cd /home/gw/programing/Schedule-CodeGen && $(MAKE) -f src/CMakeFiles/sc.dir/build.make src/CMakeFiles/sc.dir/graph.cpp.s
+.PHONY : graph.cpp.s
+
 ir.o: ir.cpp.o
 
 .PHONY : ir.o
@@ -608,6 +635,9 @@ help:
 	@echo "... constantfold_pass.o"
 	@echo "... constantfold_pass.i"
 	@echo "... constantfold_pass.s"
+	@echo "... graph.o"
+	@echo "... graph.i"
+	@echo "... graph.s"
 	@echo "... ir.o"
 	@echo "... ir.i"
 	@echo "... ir.s"

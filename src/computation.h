@@ -96,6 +96,9 @@ public:
     static Computation make(const std::string& name,
             std::vector<Expr> shape,
             DataType data_type);
+    /**
+     * deprecated func
+     */
     static Computation make(
             Schedule& s,
             const std::string& name,
@@ -124,6 +127,9 @@ public:
             std::vector<Expr> shape,
             DataType data_type,
             TensorLoc loc=TensorLoc::MEM);
+    /*
+     * deprecated func
+     */
     static Computation make(
             Schedule& s,
             const std::string& name,
@@ -184,12 +190,28 @@ public:
 
     Stmt buildBody() const override;
 
+    /**
+     * deprecated func
+     */
     static Computation make(Schedule& s,
             const std::string& name, 
             std::vector<Iter> root_iters, 
             std::vector<Iter> reduce_iters,
             std::vector<Stmt> body);
+    /**
+     * deprecated func
+     */
     static Computation make(Schedule& s,
+            const std::string& name,
+            std::vector<Iter> root_iters,
+            std::vector<Stmt> body);
+
+    static Computation make(
+            const std::string& name, 
+            std::vector<Iter> root_iters, 
+            std::vector<Iter> reduce_iters,
+            std::vector<Stmt> body);
+    static Computation make(
             const std::string& name,
             std::vector<Iter> root_iters,
             std::vector<Stmt> body);
@@ -217,12 +239,12 @@ inline Stmt call_external(const std::string& name,
 /**
  * \bref placeholder
  */
-inline Tensor placeholder(Schedule& s,
+inline Tensor placeholder(
         const std::string& name,
         std::vector<Expr> shape,
         DataType data_type)
 {
-    auto cp = PlaceHolderComNode::make(s,
+    auto cp = PlaceHolderComNode::make(
             name, std::move(shape),
             data_type);
     return cp->outputTensors[0];
@@ -231,13 +253,13 @@ inline Tensor placeholder(Schedule& s,
 /**
  * \bref placeholder
  */
-inline Tensor allocate_tensor(Schedule& s,
+inline Tensor allocate_tensor(
         const std::string& name,
         std::vector<Expr> shape,
         DataType data_type,
         TensorLoc loc=TensorLoc::MEM)
 {
-    auto cp = AllocateComNode::make(s,
+    auto cp = AllocateComNode::make(
             name, std::move(shape),
             data_type,loc);
     return cp->outputTensors[0];
@@ -247,13 +269,12 @@ inline Tensor allocate_tensor(Schedule& s,
  * \bref nest loop computation
  */
 inline Computation nest_loop_computation(
-        Schedule& s, 
         const std::string& name,
         std::vector<Iter> root_iters,
         std::vector<Iter> reduce_iters,
         std::vector<Stmt> body)
 {
-    return NestLoopComNode::make(s,
+    return NestLoopComNode::make(
             name, std::move(root_iters), 
             std::move(reduce_iters), 
             std::move(body));
@@ -263,12 +284,11 @@ inline Computation nest_loop_computation(
  * \bref nest loop computation without reduce_iters
  */
 inline Computation nest_loop_computation(
-        Schedule& s,
         const std::string& name,
         std::vector<Iter> root_iters,
         std::vector<Stmt> body)
 {
-    return NestLoopComNode::make(s,
+    return NestLoopComNode::make(
             name, std::move(root_iters), 
             {},
             std::move(body));

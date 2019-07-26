@@ -14,6 +14,7 @@
 #include "node.h"
 #include "ir.h"
 #include "iroperator.h"
+#include "graph.h"
 
 namespace 
 {
@@ -268,18 +269,19 @@ Stage& Stage::compute_at(Stage s, Iter scope)
     return *this;
 }
 
-Schedule ScheduleNode::make(Computation cp)
+/*Schedule ScheduleNode::make(Computation cp)
 {
-    CHECK_IF(cp.notNull(), " initial computation of schedule cannot be NULL");
-    CHECK_IF(false, "not implemented");
-    return ScheduleNode::make();
-}
+    return ScheduleNode::make( {cp});
+}*/
 
 Schedule ScheduleNode::make(std::vector<Computation> cps)
 {
     CHECK_IF(cps.size() > 0, "computation vector is empty");
+
+    std::vector<Computation> all_cps = SC::topological_sort(cps);
+
     ScheduleNode* s = new ScheduleNode();
-    for(auto& cp : cps)
+    for(auto& cp : all_cps)
     {
         s->stages.emplace_back(
                 StageNode::make(std::move(cp))); 
@@ -296,7 +298,15 @@ Schedule ScheduleNode::make(std::vector<Stage> ss)
     return Schedule(s);
 }
 
-Schedule ScheduleNode::make()
+void Schedule::construct_cp2stage()
+{
+    for(auto& s : get()->stages)
+    {
+        get()->cp2stage.emplace(s->original_cp, s);
+    }
+}
+
+/*Schedule ScheduleNode::make()
 {
     return Schedule(new ScheduleNode());
 }
@@ -308,6 +318,6 @@ Stage Schedule::addComputation(Computation cp)
     get()->stages.push_back(s);
     get()->cp2stage.emplace(cp, s);
     return s;
-}
+}*/
 
 } // namespace SC
