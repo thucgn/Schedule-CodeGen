@@ -30,7 +30,7 @@ int main()
     LOG("dense");
 
     Dense<float> dense;
-    std::map<std::string, std::string> param = {{"m","257"}, {"n","257"},{"k","256"}};
+    std::map<std::string, std::string> param = {{"M","257"}, {"N","257"},{"K","256"}};
     dense.setParameter(param);
     LOG("define");
     Computation cp = dense.define(spa);

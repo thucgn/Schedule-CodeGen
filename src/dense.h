@@ -30,33 +30,33 @@ class Dense : public Operator
 {
 private:
     DT* a, b, c;
-    int m, n, k;
+    int M, N, K;
     Computation cp;
-    //Iter im{"i", m}, jn{"j", n}, kk{"k", k, IterType::REDUCTION};
-    Iter im, jn, kk;
-    Tensor A{"A", {m, k}};
-    Tensor B{"B", {k, n}};
-    Tensor C{"C", {m, n}};
+    Iter k;
 public:
     void setParameter(Param& param) override
     {
-        m = std::stoi(param["m"]);
-        n = std::stoi(param["n"]);
-        k = std::stoi(param["k"]);
-        im = Iter("i", m);
-        jn = Iter("j", n);
-        kk = Iter("k", k, IterType::REDUCTION);
-        LOG("dense parameter m %d n %d k %d", m, n, k);
+        M = std::stoi(param["M"]);
+        N = std::stoi(param["N"]);
+        K = std::stoi(param["K"]);
+        k = Iter("k", {0,K}, IterType::REDUCTION);
+        LOG("dense parameter m %d n %d k %d", M, N, K);
     }
     Computation define(Space& spa) override 
     {
-        //Schedule s = Schedule::empty_schedule();
-        Stmt reduce = reduce_add(C[im][jn], A[im][kk]*B[kk][jn]);
-        cp = nest_loop_computation("main", {im, jn, kk}, {reduce});
+        
+        Tensor A = SC::placeholder("A", {M, K}, Float(32));
+        Tensor B = SC::placeholder("B", {K, N}, Float(32));
+        Tensor C = SC::placeholder("C", {M, N}, Float(32));
+        Iter i{"i", M}, j{"j", M};//, k{"k", {0, K}, IterType::REDUCTION};
+        Computation init = SC::nest_loop_computation("init_c", {i,j}, 
+            { C[i][j] = 0.0f });
+        cp = SC::nest_loop_computation("dense",{i, j, k}, { reduce_add(C[i][j], A[i][k]*B[k][j]) });
+
         Axis io, ii, jo, ji;
-        std::tie(io, ii) = spa.define_split("mc", im, {2, 4, 8, 16, 32, 64});
-        std::tie(jo, ji) = spa.define_split("nc", jn, {2, 4, 8, 16, 32, 64});
-        spa.define_reorder("reorderij", { {io, jo, ii, ji, kk} });
+        std::tie(io, ii) = spa.define_split("mc", i, {2, 4, 8, 16, 32, 64});
+        std::tie(jo, ji) = spa.define_split("nc", j, {2, 4, 8, 16, 32, 64});
+        spa.define_reorder("reorderij", { {io, jo, ii, ji, k} });
 
         return cp;
     }
@@ -67,7 +67,7 @@ public:
         std::tie(io, ii) = spa.apply_split("mc", stage); 
         std::tie(jo, ji) = spa.apply_split("nc", stage);
         spa.apply_reorder("reorderij", stage);
-        stage.reorder({jo->x, io->x, ii->x, ji->x, kk});
+        stage.reorder({jo->x, io->x, ii->x, ji->x, k});
     }
     Operator* clone() override {
         CHECK_IF(false, "clone has not been implemented");
