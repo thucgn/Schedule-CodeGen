@@ -54,6 +54,11 @@ private :
     }
 public:
 
+    ~RefCountPtr() 
+    {
+        decref(ptr);
+    }
+
     RefCountPtr() : ptr(nullptr) {}
     RefCountPtr(T* p) : ptr(p) { incref(ptr); }
     RefCountPtr(const RefCountPtr& o)
